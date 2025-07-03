@@ -10,3 +10,13 @@ export const getProfile = async (): Promise<User | null> => {
     return null;
   }
 };
+
+export const login = async (credentials: any): Promise<User> => {
+  const response = await api.post<{ user: User }>("/auth/login", credentials);
+  return response.data.user;
+};
+
+export const register = async (credentials: any): Promise<User> => {
+  const response = await api.post<{ user: User }>("/auth/register", credentials);
+  return response.data.user;
+};

@@ -5,3 +5,9 @@ export type User = {
   role: string;
   avatar: string;
 };
+
+export type AuthResponse = {
+  user: User;
+  accessToken: string;
+  refreshToken: string;
+};

@@ -8,8 +8,9 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Pico Ai Assitant",
-  description: "",
+  title: "Manual Authentication",
+  description:
+    "A custom token-based authentication system built from scratch with Axios interceptors.",
 };
 
 export default async function RootLayout({

@@ -14,7 +14,6 @@ export async function POST(): Promise<NextResponse<ApiResponse>> {
   }
 
   try {
-    // !TODO: Replace with your actual external API URL from .env
     const externalApiUrl = `${process.env.EXTERNAL_API_URL}/auth/refresh`;
 
     const response = await fetch(externalApiUrl, {
