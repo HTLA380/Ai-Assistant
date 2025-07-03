@@ -63,3 +63,5 @@ export const createAuthStore = (
     },
   }));
 };
+
+export const authStore = createAuthStore();

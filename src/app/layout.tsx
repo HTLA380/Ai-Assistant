@@ -1,7 +1,7 @@
+import { getProfile } from "@/features/auth/services/auth.server.service";
 import { AuthStoreProvider } from "@/features/auth/stores/auth-store-provider";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { getProfile } from "@/features/auth/services/auth.service";
 
 const inter = Inter({
   subsets: ["latin"],

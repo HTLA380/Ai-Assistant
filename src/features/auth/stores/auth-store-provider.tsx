@@ -7,6 +7,7 @@ import {
   type AuthStore,
   createAuthStore,
   type AuthState,
+  authStore,
 } from "./use-auth-store";
 
 export type AuthStoreApi = ReturnType<typeof createAuthStore>;
@@ -24,9 +25,12 @@ export const AuthStoreProvider = ({
   children,
   initialState,
 }: AuthStoreProviderProps) => {
-  const storeRef = useRef<AuthStoreApi | null>(null);
-  if (storeRef.current === null) {
-    storeRef.current = createAuthStore(initialState);
+  const storeRef = useRef<AuthStoreApi>(null);
+  if (!storeRef.current) {
+    if (initialState) {
+      authStore.setState(initialState);
+    }
+    storeRef.current = authStore;
   }
 
   return (

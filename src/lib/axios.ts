@@ -1,5 +1,6 @@
 "use client";
 
+import { authStore } from "@/features/auth/stores/use-auth-store";
 import axios, { InternalAxiosRequestConfig } from "axios";
 
 const api = axios.create({
@@ -51,14 +52,16 @@ api.interceptors.response.use(
 
       try {
         await axios.post("/api/auth/refresh");
+        await authStore.getState().getMe();
 
         processQueue(null, "retrying");
 
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError as Error, null);
-        
+
         if (typeof window !== "undefined") {
+          authStore.getState().logout();
           window.location.href = "/login";
         }
 
