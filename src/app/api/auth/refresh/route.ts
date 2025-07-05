@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { ApiResponse } from "../../types";
+import { deleteCookie, setCookie } from "@/lib/cookes";
 
 export async function POST(): Promise<NextResponse<ApiResponse>> {
   const cookieStore = await cookies();
@@ -30,11 +31,7 @@ export async function POST(): Promise<NextResponse<ApiResponse>> {
 
     const newAuthToken = data.accessToken;
 
-    cookieStore.set("auth_token", newAuthToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-    });
+    setCookie("auth_token", newAuthToken);
 
     return NextResponse.json(
       { data: { message: "Token refreshed" } },
@@ -43,9 +40,8 @@ export async function POST(): Promise<NextResponse<ApiResponse>> {
   } catch (error: any) {
     console.error("Refresh Error:", error);
 
-    const cookieStore = await cookies();
-    cookieStore.delete("auth_token");
-    cookieStore.delete("refresh_token");
+    deleteCookie("auth_token");
+    deleteCookie("refresh_token");
 
     return NextResponse.json(
       { error: { message: error.message || "Failed to refresh token" } },

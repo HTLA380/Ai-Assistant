@@ -2,6 +2,8 @@ import { getProfile } from "@/features/auth/services/auth.server.service";
 import { AuthStoreProvider } from "@/features/auth/stores/auth-store-provider";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import ThemeProvider from "./components/providers/theme-provider";
+import { Toaster } from "./components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,10 +29,13 @@ export default async function RootLayout({
   };
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <AuthStoreProvider initialState={initialState}>
-          {children}
+          <ThemeProvider>
+            <Toaster />
+            {children}
+          </ThemeProvider>
         </AuthStoreProvider>
       </body>
     </html>

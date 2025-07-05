@@ -1,9 +1,9 @@
 export type User = {
   id: string;
+  username: string;
   email: string;
-  name: string;
-  role: string;
-  avatar: string;
+  gender: string;
+  image: string;
 };
 
 export type AuthResponse = {
