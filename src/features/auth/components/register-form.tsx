@@ -8,6 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/app/components/ui/form";
+import { register } from "@/features/auth/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@mijn-ui/react";
 import { Button } from "@mijn-ui/react-button";
@@ -15,25 +16,24 @@ import { Input } from "@mijn-ui/react-input";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as z from "zod";
-
-const formSchema = z.object({
-  name: z.string().min(3, "Name must be at least 3 characters"),
-  email: z.string().email({ message: "Enter a valid email address" }),
-  password: z.string().min(4, "Password must be at least 4 characters"),
-});
-
-type UserFormValue = z.infer<typeof formSchema>;
+import { registerFormSchema, RegisterFormValues } from "../types";
 
 const RegisterForm = () => {
   const [loading, startTransition] = useTransition();
-  const form = useForm<UserFormValue>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { name: "", email: "", password: "" },
+  const form = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerFormSchema),
+    defaultValues: { username: "", email: "", password: "" },
   });
 
-  const onSubmit = async (data: UserFormValue) => {
-    toast.success(`Register Successful!`);
+  const onSubmit = async (data: RegisterFormValues) => {
+    startTransition(async () => {
+      const result = await register(data);
+      if (result?.error) {
+        toast.error(result.error);
+      } else {
+        toast.success("Registration successful!");
+      }
+    });
   };
 
   return (
@@ -44,13 +44,13 @@ const RegisterForm = () => {
           className="w-full space-y-2">
           <FormField
             control={form.control}
-            name="name"
+            name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Username</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Enter your name..."
+                    placeholder="Choose a username..."
                     disabled={loading}
                     {...field}
                   />

@@ -1,24 +1,19 @@
 "use client";
 
 import { useAuthStore } from "@/features/auth/stores/auth-store-provider";
-import { useEffect } from "react";
+import { Button } from "@mijn-ui/react-button";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const DashboardPage = () => {
-  const { user, isLoading, getMe } = useAuthStore((state) => state);
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
+  const router = useRouter();
 
-  useEffect(() => {
-    if (!user) {
-      getMe();
-    }
-  }, [user, getMe]);
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    );
-  }
+  const handleLogout = async () => {
+    await logout();
+    router.push("/login");
+  };
 
   if (!user) {
     return (
@@ -31,19 +26,26 @@ const DashboardPage = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="w-full max-w-lg rounded-lg bg-white p-8 shadow-md dark:bg-gray-800">
-        <h1 className="mb-4 text-center text-3xl font-bold text-gray-900 dark:text-white">
-          Dashboard
-        </h1>
-        <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Dashboard
+          </h1>
+          <Button variant="danger" onClick={handleLogout}>
+            Logout
+          </Button>
+        </div>
+        <div className="mt-4 space-y-4">
           <div className="flex items-center space-x-4">
-            <img
-              src={user.avatar || `https://avatar.vercel.sh/${user.email}`}
+            <Image
+              width={40}
+              height={40}
+              src={user.image}
               alt="User Avatar"
-              className="h-20 w-20 rounded-full"
+              className="size-20 rounded-full"
             />
             <div>
               <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
-                {user.name}
+                {user.username}
               </h2>
               <p className="text-md text-gray-600 dark:text-gray-400">
                 {user.email}

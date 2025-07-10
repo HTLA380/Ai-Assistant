@@ -1,6 +1,12 @@
 "use client";
 
-import { type ReactNode, createContext, useRef, useContext } from "react";
+import {
+  type ReactNode,
+  createContext,
+  useRef,
+  useContext,
+  useEffect,
+} from "react";
 import { useStore } from "zustand";
 
 import {
@@ -32,6 +38,12 @@ export const AuthStoreProvider = ({
     }
     storeRef.current = authStore;
   }
+
+  useEffect(() => {
+    if (initialState) {
+      storeRef.current?.setState(initialState);
+    }
+  }, [initialState]);
 
   return (
     <AuthStoreContext.Provider value={storeRef.current}>
