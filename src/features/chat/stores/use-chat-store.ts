@@ -10,11 +10,13 @@ export type ChatStatus = "ready" | "streaming" | "error"
 type ChatState = {
   messages: Message[]
   status: ChatStatus
-  input: string
+  input: string,
+  previousResponseId: null | number |string
 }
 
 type ChatActions = {
   setInput: (input: string) => void
+  setPreviousResponseId:(input:null|number|string)=>void
   addMessage: (message: Message) => void
   updateLastMessage: (content: string) => void
   setStatus: (status: ChatStatus) => void
@@ -28,11 +30,13 @@ const initialState: ChatState = {
   messages: [],
   status: "ready",
   input: "",
+  previousResponseId : null,
 }
 
 export const useChatStore = create<ChatStore>((set) => ({
   ...initialState,
   setInput: (input) => set({ input }),
+  setPreviousResponseId : (previousResponseId: any) => set({previousResponseId}),
 
   addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
 

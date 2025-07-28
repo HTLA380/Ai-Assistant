@@ -2,19 +2,27 @@ import { useChatStore } from "../stores/use-chat-store"
 import { FormEventHandler, useCallback } from "react"
 
 export const useChat = () => {
-  const { messages, status, input, setInput, addMessage, updateLastMessage, setStatus, setError } = useChatStore()
+  const {
+    messages,
+    previousResponseId,
+    status,
+    input,
+    setInput,
+    setPreviousResponseId,
+    addMessage,
+    updateLastMessage,
+    setStatus,
+    setError,
+  } = useChatStore()
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     async (event) => {
       event.preventDefault()
 
-      if (!input || status === "streaming") {
-        return
-      }
+      if (!input || status === "streaming") return
 
       const currentInput = input
 
-      // Add user message and the assistant's placeholder in one go
       addMessage({ role: "user", content: currentInput })
       addMessage({ role: "assistant", content: "" })
       setStatus("streaming")
@@ -24,7 +32,7 @@ export const useChat = () => {
         const response = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: currentInput }),
+          body: JSON.stringify({ message: currentInput, previousResponseId }),
         })
 
         if (!response.ok || !response.body) {
@@ -34,104 +42,94 @@ export const useChat = () => {
 
         const reader = response.body.getReader()
         const decoder = new TextDecoder()
+        let buffer = ""
 
         while (true) {
           const { done, value } = await reader.read()
-          if (done) {
-            setStatus("ready")
-            break
+          if (done) break
+
+          buffer += decoder.decode(value, { stream: true })
+
+          const events = buffer.split("\n\n")
+
+          for (let i = 0; i < events.length - 1; i++) {
+            const eventBlock = events[i].trim()
+            if (!eventBlock) continue
+
+            const lines = eventBlock.split("\n")
+            const dataLine = lines.find((line) => line.startsWith("data:"))
+            if (!dataLine) continue
+
+            const jsonStr = dataLine.replace(/^data:\s*/, "")
+
+            if (jsonStr === "[DONE]") {
+              setStatus("ready")
+              return
+            }
+
+            try {
+              const data = JSON.parse(jsonStr)
+
+              switch (data.type) {
+                case "response.output_text.delta":
+                  updateLastMessage(data.delta ?? "")
+                  break
+                case "response.created":
+                  if (data.response.id) {
+                    setPreviousResponseId(data.response.id)
+                  }
+                  break
+                case "response.failed":
+                  console.error("Response failed:", data)
+                  setError("The AI failed to respond.")
+                  setStatus("ready")
+                  return
+                case "response.completed":
+                  setStatus("ready")
+                  return
+                default:
+                  break
+              }
+            } catch (err) {
+              console.error("Invalid JSON chunk:", jsonStr, err)
+            }
           }
 
-          const chunk = decoder.decode(value, { stream: true })
-          
-          const lines = chunk.split("\n");
-          // const lines = chunk.split("\n").filter((line) => line.trim() !== "")
-          
-
-          // for (const line of lines) {
-          //   const message = line.replace(/^data: /, "")
-          //   if (message === "[DONE]") {
-          //     setStatus("ready")
-          //     return // End of stream
-          //   }
-          //   try {
-          //     const parsed = JSON.parse(message)
-          //     console.log("[OpenAI Stream Chunk]:", parsed);
-              
-          //     const content = parsed.data.delta 
-          //     if (content) {
-          //       updateLastMessage(content)
-          //     }
-          //   } catch (error) {
-          //     console.error("Could not parse JSON chunk:", message, error)
-          //   }
-          // }
-          for (const line of lines) {
-              if (line.startsWith('data:')) {
-                  const jsonData = line.substring(5).trim();
-                  if (jsonData) {
-                      try {
-                          // console.log(jsonData,'json data');
-                         let data;
-                         try {
-                           data = JSON.parse(jsonData);
-                         } catch (err) {
-                           // Skip invalid JSON chunks
-                          //  console.error("Could not parse JSON chunk:", jsonData, err);
-                           continue;
-                         }
-                         if (data.type === "response.output_text.delta") {
-                            const rawMarkdown = data.delta ?? ""
-                            if (rawMarkdown) {
-                              updateLastMessage(rawMarkdown)
-                            }
-                          } else if (data.type === "response.created") {
-                            // You can handle response.created here if needed, e.g. store previous_response_id
-                            // const previous_response_id = data.response.id
-                          } else if (data.type === "response.completed") {
-                            // Optionally handle completed response type, or just skip
-                            continue;
-                          }
-                          // processJsonData(data);
-                      } catch (error) {
-                          console.error("Could not parse JSON chunk:", jsonData, error);
-                      }
-                  }
-              }
-              
-              // if (message === "[DONE]") {
-              //   setStatus("ready")
-              //   return // End of stream
-              // }
-              // try {
-              //   const data = JSON.parse(message)
-              //   if (data.type === "response.output_text.delta") {
-              //     const rawMarkdown = data.delta ?? ""
-              //     if (rawMarkdown) {
-              //       updateLastMessage(rawMarkdown)
-              //     }
-              //   } else if (data.type === "response.created") {
-              //     // You can handle response.created here if needed, e.g. store previous_response_id
-              //     // const previous_response_id = data.response.id
-              //   }
-              // } catch (error) {
-              //   console.error("Could not parse JSON chunk:", message, error)
-              // }
-            }
+          // Retain unfinished chunk
+          buffer = events[events.length - 1]
         }
+
+        setStatus("ready")
       } catch (error) {
-        const errorMessage = `Sorry, I encountered an error: ${error instanceof Error ? error.message : String(error)}`
-        setError(errorMessage)
+        console.error("Chat error:", error)
+        setError(
+          `Sorry, I encountered an error: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        )
+        setStatus("ready")
       }
     },
-    [input, status, addMessage, setStatus, setInput, updateLastMessage, setError],
+    [
+      input,
+      status,
+      previousResponseId,
+      addMessage,
+      updateLastMessage,
+      setStatus,
+      setInput,
+      setError,
+      setPreviousResponseId,
+    ]
   )
 
   return {
     messages,
     status,
     input,
+    previousResponseId,
     setInput,
+    setPreviousResponseId,
     handleSubmit,
   }
 }
