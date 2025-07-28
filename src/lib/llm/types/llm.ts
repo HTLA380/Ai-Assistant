@@ -4,10 +4,10 @@
  * Represents the structure of the LLM endpoint information.
  * Note: `key` is expected to be null here for security.
  */
-export interface LlmEndpointInfo {
-  key: null;
-  endpoint: string | Request | URL;
-}
+// export interface LlmEndpointInfo {
+//   key: null;
+//   endpoint: string | Request | URL;
+// }
 
 /**
  * Represents the structure of the Tools configuration.
@@ -23,7 +23,8 @@ export interface LlmToolsConfig {
  * Represents the full response structure from /api/llm-config.
  */
 export interface LlmConfigResponse {
-  endpoint: LlmEndpointInfo;
+  endpoint: string | Request | URL;
+  provider: string;
   model: string;
   token: null; // Or `string | null`
   smart_prompt: string;
