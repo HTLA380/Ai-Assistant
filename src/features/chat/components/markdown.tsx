@@ -32,7 +32,7 @@ const components: Partial<Components> = {
       </code>
     )
   },
-  input: ({ node: _, type, disabled, checked, ...props }) => {
+  input: ({ node: _, type, disabled: _, checked, ...props }) => {
     if (type === "checkbox") {
       return (
         <input
