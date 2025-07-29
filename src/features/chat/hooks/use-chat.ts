@@ -7,6 +7,7 @@ export const useChat = () => {
     previousResponseId,
     status,
     input,
+    llmConfig,
     setInput,
     setPreviousResponseId,
     addMessage,
@@ -19,7 +20,12 @@ export const useChat = () => {
     async (event) => {
       event.preventDefault()
 
-      if (!input || status === "streaming") return
+      if (!input || status === "streaming" || !llmConfig) {
+        if (!llmConfig) {
+          setError("LLM configuration is not loaded yet. Please wait.")
+        }
+        return
+      }
 
       const currentInput = input
 
@@ -35,7 +41,11 @@ export const useChat = () => {
         const response = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: currentInput, previousResponseId }),
+          body: JSON.stringify({
+            message: currentInput,
+            previousResponseId,
+            llmConfig, // Pass the config from the store
+          }),
         })
 
         if (!response.ok || !response.body) {
@@ -113,6 +123,7 @@ export const useChat = () => {
       input,
       status,
       previousResponseId,
+      llmConfig,
       addMessage,
       updateLastMessage,
       setStatus,

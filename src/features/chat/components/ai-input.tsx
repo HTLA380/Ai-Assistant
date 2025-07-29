@@ -138,7 +138,7 @@ export const AIInputButton = ({ variant = "ghost", className, size, ...props }: 
 }
 
 export type AIInputSubmitProps = ComponentProps<typeof Button> & {
-  status?: "submitted" | "streaming" | "ready" | "error"
+  status?: "submitted" | "streaming" | "ready" | "error" | "loading-config"
 }
 
 export const AIInputSubmit = ({ className, variant = "default", status, children, ...props }: AIInputSubmitProps) => {

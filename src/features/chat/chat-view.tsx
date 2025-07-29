@@ -1,7 +1,7 @@
 "use client"
 
 import { AnimatePresence } from "framer-motion"
-import { AIConversation, AIConversationContent, AIConversationScrollButton } from "../../components/ui/conversation"
+import { AIConversation, AIConversationContent, AIConversationScrollButton } from "./components/conversation"
 import Messages from "./components/messages"
 import PromptArea from "./components/prompt-area"
 import { useChat } from "./hooks/use-chat"

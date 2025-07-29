@@ -7,13 +7,14 @@ import {
   AIInputTextarea,
   AIInputToolbar,
   AIInputTools,
-} from "@/components/ui/ai-input"
+} from "@/features/chat/components/ai-input"
 import { Button, cn } from "@mijn-ui/react"
 import { motion } from "framer-motion"
 import { GlobeIcon, Paperclip, Telescope } from "lucide-react"
 import { SUGGESTION_ITEMS } from "./constants"
 import { ChangeEventHandler, FormEventHandler } from "react"
 import { ChatStatus } from "../stores/use-chat-store"
+import { useLlmConfig } from "../hooks/use-llm-config"
 
 type PromptAreaProps = {
   input: string
@@ -24,6 +25,9 @@ type PromptAreaProps = {
 }
 
 const PromptArea = ({ input, status, hasConversation, onInputChange, onSubmit }: PromptAreaProps) => {
+  // get default LLM Default config
+  useLlmConfig()
+
   return (
     <div className="pointer-events-none absolute inset-0 z-50 w-full">
       <div className="mx-auto flex size-full flex-col items-center justify-center">
@@ -61,7 +65,10 @@ const PromptArea = ({ input, status, hasConversation, onInputChange, onSubmit }:
                   <span>Search</span>
                 </AIInputButton>
               </AIInputTools>
-              <AIInputSubmit disabled={!input || status === "streaming"} status={status} />
+              <AIInputSubmit
+                disabled={!input || status === "streaming" || status === "loading-config"}
+                status={status}
+              />
             </AIInputToolbar>
           </AIInput>
         </motion.div>

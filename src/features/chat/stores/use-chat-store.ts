@@ -1,3 +1,4 @@
+import { LlmConfigResponse } from "@/lib/llm/types/llm"
 import { create } from "zustand"
 
 export type Message = {
@@ -5,18 +6,20 @@ export type Message = {
   content: string
 }
 
-export type ChatStatus = "ready" | "streaming" | "error"
+export type ChatStatus = "ready" | "streaming" | "error" | "loading-config"
 
 type ChatState = {
   messages: Message[]
   status: ChatStatus
-  input: string,
-  previousResponseId: null | number |string
+  input: string
+  previousResponseId: null | number | string
+  llmConfig: LlmConfigResponse | null
 }
 
 type ChatActions = {
   setInput: (input: string) => void
-  setPreviousResponseId:(input:null|number|string)=>void
+  setPreviousResponseId: (input: null | number | string) => void
+  setLlmConfig: (config: LlmConfigResponse) => void
   addMessage: (message: Message) => void
   updateLastMessage: (content: string) => void
   setStatus: (status: ChatStatus) => void
@@ -30,14 +33,16 @@ const initialState: ChatState = {
   messages: [],
   status: "ready",
   input: "",
-  previousResponseId : null,
+  previousResponseId: null,
+  llmConfig: null,
 }
 
 export const useChatStore = create<ChatStore>((set) => ({
   ...initialState,
 
   setInput: (input) => set({ input }),
-  setPreviousResponseId : (previousResponseId: any) => set({previousResponseId}),
+  setPreviousResponseId: (previousResponseId: any) => set({ previousResponseId }),
+  setLlmConfig: (config) => set({ llmConfig: config }),
 
   addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
 

@@ -176,10 +176,8 @@ const ResizableLayoutPanel = ({
     if (!panel) return
 
     if (isOpen && panel.isCollapsed()) {
-      console.log("isOpen = true and panel is collapsed, now expending the panel")
       panel.expand()
     } else if (!isOpen && !panel.isCollapsed()) {
-      console.log("isOpen = false and panel is expended, now collapsing the panel")
       panel.collapse()
     }
   }, [isOpen])

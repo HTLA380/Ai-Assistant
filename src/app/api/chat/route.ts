@@ -1,25 +1,28 @@
-import { getLlmConfiguration } from "@/lib/llm/config/getLlmConfiguration";
-import { LlmConfigResponse } from "@/lib/llm/types/llm";
-import { NextRequest } from "next/server";
+import { LlmConfigResponse } from "@/lib/llm/types/llm"
+import { NextRequest } from "next/server"
 
-export const runtime = "edge";
+export const runtime = "edge"
 
 export async function POST(req: NextRequest): Promise<Response> {
-  const { message, previousResponseId } = await req.json();
-  console.log('previousResponseId'+previousResponseId);
-  
+  const {
+    message,
+    previousResponseId,
+    llmConfig,
+  }: { message: string; previousResponseId: string; llmConfig: LlmConfigResponse } = await req.json()
 
   if (!process.env.OPENAI_API_KEY) {
-    return new Response("Missing OpenAI API Key", { status: 500 });
+    return new Response("Missing OpenAI API Key", { status: 500 })
   }
 
   if (!message) {
-    return new Response("Missing message", { status: 400 });
+    return new Response("Missing message", { status: 400 })
+  }
+
+  if (!llmConfig) {
+    return new Response("Missing LLM configuration", { status: 400 })
   }
 
   try {
-    const llmConfig: LlmConfigResponse = await getLlmConfiguration();
-
     const openAIResponse = await fetch(llmConfig.endpoint, {
       method: "POST",
       headers: {
@@ -32,13 +35,13 @@ export async function POST(req: NextRequest): Promise<Response> {
         instructions: llmConfig.smart_prompt,
         tools: Array.isArray(llmConfig.tools) ? llmConfig.tools : [llmConfig.tools],
         stream: true,
-        previous_response_id:previousResponseId,
+        previous_response_id: previousResponseId,
       }),
-    });
+    })
 
     if (!openAIResponse.ok || !openAIResponse.body) {
-      const errorText = await openAIResponse.text();
-      return new Response(errorText, { status: openAIResponse.status });
+      const errorText = await openAIResponse.text()
+      return new Response(errorText, { status: openAIResponse.status })
     }
 
     // Just return the stream directly — no transformation
@@ -49,10 +52,9 @@ export async function POST(req: NextRequest): Promise<Response> {
         "Cache-Control": "no-cache, no-transform",
         Connection: "keep-alive",
       },
-    });
-
+    })
   } catch (err) {
-    console.error("Chat proxy error:", err);
-    return new Response("Internal Server Error", { status: 500 });
+    console.error("Chat proxy error:", err)
+    return new Response("Internal Server Error", { status: 500 })
   }
 }
