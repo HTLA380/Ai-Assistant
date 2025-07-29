@@ -8,7 +8,7 @@ import { Input } from "@mijn-ui/react-input"
 import { useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { login } from "../actions"
+import { login } from "../api/actions"
 import { LoginFormValues, loginFormSchema } from "../schema"
 
 const LoginForm = () => {

@@ -1,6 +1,14 @@
 import { cookies } from "next/headers"
 import axiosServer from "./axios"
-import { User } from "@/features/auth/types"
+
+export type User = {
+  id: string
+  username: string
+  email: string
+  gender: string
+  image: string
+  role: string
+}
 
 export const ACCESS_TOKEN = "access-token"
 export const REFRESH_TOKEN = "refresh-token"

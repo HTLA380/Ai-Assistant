@@ -1,5 +1,5 @@
+import { User } from "@/lib/auth"
 import { createStore } from "zustand/vanilla"
-import { User } from "../types"
 
 export type AuthState = {
   user: User | null

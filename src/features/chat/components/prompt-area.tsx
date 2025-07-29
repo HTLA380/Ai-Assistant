@@ -72,7 +72,7 @@ const PromptArea = ({ input, status, hasConversation, onInputChange, onSubmit }:
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ delay: 0.8 }}
-            className="pointer-events-auto mt-6 hidden max-w-3xl flex-wrap items-center gap-2 md:flex">
+            className="pointer-events-auto mt-6 hidden max-w-[90%] flex-wrap items-center gap-2 px-6 md:flex xl:max-w-3xl xl:px-0">
             {SUGGESTION_ITEMS.map((item) => (
               <Button key={item.id} size="sm" className="gap-2">
                 {item.icon}
@@ -88,7 +88,11 @@ const PromptArea = ({ input, status, hasConversation, onInputChange, onSubmit }:
 
 const WelcomeMessage = ({ className }: { className?: string }) => {
   return (
-    <div className={cn("flex w-full max-w-3xl flex-col items-start justify-center px-6 md:px-0", className)}>
+    <div
+      className={cn(
+        "flex w-full max-w-[90%] flex-col items-start justify-center px-6 xl:max-w-3xl xl:px-0",
+        className,
+      )}>
       <motion.h1
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

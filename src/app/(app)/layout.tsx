@@ -1,16 +1,12 @@
-import { getServerSideResizableLayoutCookieData } from "@/components/resizable-layout/server-utils"
-
 import { AuthStoreProvider } from "@/features/auth/stores/auth-store-provider"
 
 import { getCurrentUser } from "@/lib/auth"
-import { getCookie } from "@/lib/cookies"
 
-import AppShellLayout from "@/features/app-shell/app-shell-layout"
-import React from "react"
+import { AppLayout as AppLayoutUI, getServerSideAppLayoutCookieData } from "@/components/layout/app-layout"
 import { UserProfile } from "@/features/auth/components/user-profile"
-import { PanelViewType } from "@/features/app-shell/constants"
+import React from "react"
+import { DynamicPanelContent } from "@/features/panel/dynamic-panel-content"
 
-// Temporary fallback user info for MVP only
 const TEMP_USER_INFO_UNTIL_AUTH_READY = {
   id: "1",
   username: "Htet Aung Lin",
@@ -21,9 +17,7 @@ const TEMP_USER_INFO_UNTIL_AUTH_READY = {
 }
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const initialPanelView = (await getCookie("chat_panel_active_view")) || null
-
-  const { states, sizes } = await getServerSideResizableLayoutCookieData()
+  const defaultValues = await getServerSideAppLayoutCookieData()
 
   const user = await getCurrentUser()
 
@@ -35,13 +29,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <AuthStoreProvider initialState={userInitialState}>
-      <AppShellLayout
-        initialPanelView={initialPanelView as PanelViewType}
-        initialState={states}
-        defaultLayout={sizes}
-        renderUser={<UserProfile user={user} />}>
+      <AppLayoutUI
+        defaultValues={defaultValues}
+        headerSlot={<UserProfile user={user} />}
+        panelSlot={<DynamicPanelContent />}>
         {children}
-      </AppShellLayout>
+      </AppLayoutUI>
     </AuthStoreProvider>
   )
 }

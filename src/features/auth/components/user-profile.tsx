@@ -25,8 +25,8 @@ import {
 } from "@mijn-ui/react"
 import { ExternalLink, FileSpreadsheet, LogOut, Moon, Settings, Sun } from "lucide-react"
 import Link from "next/link"
-import { logout } from "../actions"
-import { User } from "../types"
+import { logout } from "../api/actions"
+import { User } from "@/lib/auth"
 
 const UserProfile = ({ user }: { user: User | null }) => {
   const handleLogout = async () => {

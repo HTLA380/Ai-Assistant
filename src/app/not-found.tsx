@@ -1,6 +1,6 @@
-import { BasicHomeLayout } from "@/features/home/components/basic-home-layout"
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@mijn-ui/react"
 import Link from "next/link"
+import { BasicHomeLayout } from "./(marketing)/_components/basic-home-layout"
 
 const NotFound = () => {
   return (

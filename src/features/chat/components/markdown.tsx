@@ -1,4 +1,3 @@
-import { Checkbox } from "@mijn-ui/react"
 import { cn } from "@mijn-ui/react-theme"
 import ReactMarkdown, { type Components } from "react-markdown"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"

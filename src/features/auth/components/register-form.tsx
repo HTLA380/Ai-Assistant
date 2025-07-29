@@ -1,7 +1,7 @@
 "use client"
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { register } from "../actions"
+import { register } from "../api/actions"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Separator } from "@mijn-ui/react"
 import { Button } from "@mijn-ui/react-button"

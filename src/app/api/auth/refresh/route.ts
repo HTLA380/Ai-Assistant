@@ -1,5 +1,5 @@
 import { ACCESS_TOKEN, REFRESH_TOKEN, refresh } from "@/lib/auth"
-import { deleteCookie, getCookie, setCookie } from "@/lib/cookies"
+import { deleteCookie, getCookie, setCookie } from "@/utils/cookies/server"
 import { NextResponse } from "next/server"
 import { ApiResponse } from "../../types"
 
