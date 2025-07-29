@@ -32,7 +32,7 @@ const components: Partial<Components> = {
       </code>
     )
   },
-  input: ({ node: _, type, disabled: _, checked, ...props }) => {
+  input: ({ node: _, type, checked, ...props }) => {
     if (type === "checkbox") {
       return (
         <input
@@ -40,6 +40,7 @@ const components: Partial<Components> = {
           checked={checked}
           className="pointer-events-none size-3.5 rounded-xs border-border bg-background text-blue-600 outline-none ring-offset-2 focus:ring-2 focus:ring-blue-600 focus:ring-offset-background"
           {...props}
+          disabled={false}
         />
       )
     }
