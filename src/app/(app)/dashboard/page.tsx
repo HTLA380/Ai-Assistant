@@ -1,5 +1,5 @@
 import { logout } from "@/features/auth/api/actions"
-import { Button } from "@mijn-ui/react-button"
+import { Button } from "@mijn-ui/react"
 
 const DashboardPage = async () => {
   return (

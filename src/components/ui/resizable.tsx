@@ -2,10 +2,10 @@
 
 import { GripVertical } from "lucide-react"
 import * as ResizablePrimitive from "react-resizable-panels"
-import { createTVUnstyledSlots } from "@mijn-ui/react-core"
+import { createTVUnstyledSlots } from "@mijn-ui/react"
 import { useTVUnstyled } from "@mijn-ui/react-hooks"
-import { UnstyledComponentWithSlots, UnstyledProps, VariantProps, cn, tv } from "@mijn-ui/react-theme"
-import { createContext } from "@mijn-ui/react-utilities"
+import { UnstyledComponentWithSlots, UnstyledProps, VariantProps, cn, tv } from "@mijn-ui/react"
+import { createContext } from "@/utils/create-context"
 
 /* -------------------------------------------------------------------------- */
 /*                              Resizable Styles                              */

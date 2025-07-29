@@ -2,7 +2,7 @@
 
 import { Button } from "@mijn-ui/react"
 import { AlertTriangle } from "lucide-react"
-import { cn } from "@mijn-ui/react-theme"
+import { cn } from "@mijn-ui/react"
 
 type ErrorDisplayProps = {
   title?: string

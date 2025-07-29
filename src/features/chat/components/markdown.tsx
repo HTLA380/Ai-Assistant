@@ -1,4 +1,4 @@
-import { cn } from "@mijn-ui/react-theme"
+import { cn } from "@mijn-ui/react"
 import ReactMarkdown, { type Components } from "react-markdown"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { a11yDark } from "react-syntax-highlighter/dist/cjs/styles/prism"
