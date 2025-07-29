@@ -39,13 +39,19 @@ const RESIZABLE_LAYOUT_PANEL_ID = "left_panel"
 /* -------------------------------------------------------------------------- */
 
 export type AppLayoutProps = {
-  defaultValues: AppLayoutCookieData
+  defaultValues?: AppLayoutCookieData
   panelSlot?: React.ReactNode
   headerSlot?: React.ReactNode
   children: React.ReactNode
 }
 
-const AppLayout = ({ children, defaultValues, panelSlot, headerSlot }: AppLayoutProps) => {
+const appLayoutDefaultValues: AppLayoutCookieData = {
+  activeView: null,
+  panels: { [RESIZABLE_LAYOUT_PANEL_ID]: false },
+  sizes: [0, 100],
+}
+
+const AppLayout = ({ children, defaultValues = appLayoutDefaultValues, panelSlot, headerSlot }: AppLayoutProps) => {
   const isMobile = useIsMobile()
 
   const onPanelChange = useCallback((panels: Record<string, boolean>) => {
