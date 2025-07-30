@@ -6,6 +6,9 @@ import { AppLayout as AppLayoutUI, getServerSideAppLayoutCookieData } from "@/co
 import { UserProfile } from "@/features/auth/components/user-profile"
 import React from "react"
 import { DynamicPanelContent } from "@/features/panel/dynamic-panel-content"
+import { UserAgentProvider } from "@/components/providers/user-agent-provider"
+import { headers } from "next/headers"
+import { userAgent } from "next/server"
 
 const TEMP_USER_INFO_UNTIL_AUTH_READY = {
   id: "1",
@@ -17,8 +20,9 @@ const TEMP_USER_INFO_UNTIL_AUTH_READY = {
 }
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const headersList = await headers()
+  const reqUserAgent = userAgent({ headers: headersList })
   const defaultValues = await getServerSideAppLayoutCookieData()
-
   const user = await getCurrentUser()
 
   const userInitialState = {
@@ -28,13 +32,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <AuthStoreProvider initialState={userInitialState}>
-      <AppLayoutUI
-        defaultValues={defaultValues}
-        headerSlot={<UserProfile user={user} />}
-        panelSlot={<DynamicPanelContent />}>
-        {children}
-      </AppLayoutUI>
-    </AuthStoreProvider>
+    <UserAgentProvider reqUserAgent={reqUserAgent}>
+      <AuthStoreProvider initialState={userInitialState}>
+        <AppLayoutUI
+          defaultValues={defaultValues}
+          headerSlot={<UserProfile user={user} />}
+          panelSlot={<DynamicPanelContent />}>
+          {children}
+        </AppLayoutUI>
+      </AuthStoreProvider>
+    </UserAgentProvider>
   )
 }

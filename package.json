@@ -37,7 +37,9 @@
     "react-syntax-highlighter": "^15.6.1",
     "remark-gfm": "^4.0.1",
     "sonner": "^2.0.6",
+    "ua-parser-js": "^2.0.4",
     "use-stick-to-bottom": "^1.1.1",
+    "usehooks-ts": "^3.1.1",
     "vaul": "^1.1.2",
     "zod": "^3.25.73",
     "zustand": "^5.0.6"

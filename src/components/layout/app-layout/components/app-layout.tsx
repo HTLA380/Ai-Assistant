@@ -9,6 +9,7 @@ import {
   SidebarToggler,
 } from "@/components/sidebar"
 import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { Button, ScrollArea, tabsStyles } from "@mijn-ui/react"
 import { Menu, X } from "lucide-react"
 import Image from "next/image"
@@ -26,7 +27,6 @@ import {
   ResizableLayoutPanel,
   ResizableLayoutProvider,
 } from "./resizable-layout"
-import { useIsMobile } from "@/hooks/use-screen-sizes"
 
 /* -------------------------------------------------------------------------- */
 /*                               Constants / IDs                              */
