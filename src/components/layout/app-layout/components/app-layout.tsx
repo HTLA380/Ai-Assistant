@@ -46,7 +46,7 @@ export type AppLayoutProps = {
 }
 
 const appLayoutDefaultValues: AppLayoutCookieData = {
-  activeView: null,
+  activeView: "history",
   panels: { [RESIZABLE_LAYOUT_PANEL_ID]: false },
   sizes: [0, 100],
 }

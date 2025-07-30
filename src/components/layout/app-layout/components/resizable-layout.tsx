@@ -3,11 +3,12 @@
 import { cn } from "@mijn-ui/react"
 import { Slot } from "@radix-ui/react-slot"
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
-import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { ImperativePanelHandle } from "react-resizable-panels"
 import { Button } from "@mijn-ui/react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { useControlledState } from "@/hooks/use-controlled-state"
+import { createContext } from "@/utils/create-context"
 
 /* -------------------------------------------------------------------------- */
 /*                           ResizableLayoutContext                           */
@@ -24,15 +25,12 @@ type ResizableLayoutContextType = {
   closePanel: (id: string) => void
 }
 
-const ResizableLayoutContext = createContext<ResizableLayoutContextType | null>(null)
-
-function useResizableLayoutContext() {
-  const context = useContext(ResizableLayoutContext)
-  if (!context) {
-    throw new Error("useResizableLayoutContext must be used within a ResizableLayoutProvider.")
-  }
-  return context
-}
+const [ResizableLayoutContextProvider, useResizableLayoutContext] = createContext<ResizableLayoutContextType>({
+  name: "ResizableLayoutContext",
+  strict: true,
+  errorMessage:
+    "useResizableLayoutContext: `context` is undefined. Ensure the component is wrapped within <ResizableLayoutProvider />",
+})
 
 /* -------------------------------------------------------------------------- */
 /*                           ResizableLayoutProvider                          */
@@ -83,9 +81,9 @@ const ResizableLayoutProvider = ({
   )
 
   return (
-    <ResizableLayoutContext.Provider value={{ panels, togglePanel, openPanel, closePanel }}>
+    <ResizableLayoutContextProvider value={{ panels, togglePanel, openPanel, closePanel }}>
       {children}
-    </ResizableLayoutContext.Provider>
+    </ResizableLayoutContextProvider>
   )
 }
 /* -------------------------------------------------------------------------- */

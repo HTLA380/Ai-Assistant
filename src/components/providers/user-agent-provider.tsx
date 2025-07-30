@@ -1,22 +1,24 @@
 "use client"
 
+import { createContext } from "@/utils/create-context"
 import { userAgent } from "next/server"
-import { createContext, useContext } from "react"
 
-export type UserAgent = ReturnType<typeof userAgent>
+export type UserAgentContextType = ReturnType<typeof userAgent>
 
-const UserAgentContext = createContext<UserAgent | undefined>(undefined)
+const [UserAgentContextProvider, useUserAgent] = createContext<UserAgentContextType>({
+  name: "UserAgentContext",
+  strict: true,
+  errorMessage: "useUserAgent: `context` is undefined. Ensure the component is wrapped within <UserAgentProvider />",
+})
 
-const UserAgentProvider = ({ reqUserAgent, children }: { reqUserAgent: UserAgent; children: React.ReactNode }) => {
-  return <UserAgentContext.Provider value={reqUserAgent}>{children}</UserAgentContext.Provider>
+const UserAgentProvider = ({
+  reqUserAgent,
+  children,
+}: {
+  reqUserAgent: UserAgentContextType
+  children: React.ReactNode
+}) => {
+  return <UserAgentContextProvider value={reqUserAgent}>{children}</UserAgentContextProvider>
 }
 
-const useUserAgent = () => {
-  const userAgent = useContext(UserAgentContext)
-  if (!userAgent) {
-    throw new Error("useUserAgent must be used within a UserAgentContext.Provider")
-  }
-  return userAgent
-}
-
-export { UserAgentContext, UserAgentProvider, useUserAgent }
+export { UserAgentProvider, useUserAgent }

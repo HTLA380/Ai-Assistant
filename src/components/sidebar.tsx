@@ -20,7 +20,7 @@ type SidebarContextType = {
 const [SidebarContextProvider, useSidebarContext] = createContext<SidebarContextType>({
   name: "SidebarContext",
   strict: true,
-  errorMessage: "SidebarContext: `context` is undefined. Ensure the component is wrapped within <Sidebar />",
+  errorMessage: "useSidebarContext: `context` is undefined. Ensure the component is wrapped within <Sidebar />",
 })
 
 /* -------------------------------------------------------------------------- */
