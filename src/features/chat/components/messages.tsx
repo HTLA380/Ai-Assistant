@@ -41,7 +41,7 @@ const Messages = ({ role, content, isStreaming }: MessagesProps) => {
       initial={{ y: 5, opacity: 0 }}
       animate={{ y: 0, opacity: 1, transition: { delay: 0.25 } }}
       data-role="assistant">
-      <p className="text-sm text-secondary-foreground">Let me cook...</p>
+      <p className="text-sm text-secondary-foreground">Let me think...</p>
     </motion.div>
   )
 
