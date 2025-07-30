@@ -93,6 +93,9 @@ export const AIInputTextarea = ({
 
   return (
     <textarea
+      style={{
+        minHeight,
+      }}
       className={cn(
         "w-full resize-none rounded-none border-none p-4 text-sm shadow-none outline-none",
         "bg-transparent dark:bg-transparent",
