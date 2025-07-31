@@ -15,6 +15,7 @@ import { SUGGESTION_ITEMS } from "./constants"
 import { ChangeEventHandler, FormEventHandler } from "react"
 import { ChatStatus } from "../stores/use-chat-store"
 import { useLlmConfig } from "../hooks/use-llm-config"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 type PromptAreaProps = {
   input: string
@@ -27,6 +28,8 @@ type PromptAreaProps = {
 const PromptArea = ({ input, status, hasConversation, onInputChange, onSubmit }: PromptAreaProps) => {
   // get default LLM Default config
   useLlmConfig()
+
+  const isMobile = useIsMobile()
 
   return (
     <div className="pointer-events-none absolute inset-0 z-50 w-full">
@@ -46,9 +49,9 @@ const PromptArea = ({ input, status, hasConversation, onInputChange, onSubmit }:
 
         <motion.div
           layout
-          className="pointer-events-auto flex w-full shrink-0 items-center justify-center bg-secondary p-4 pt-0 md:max-w-[90%]">
+          className="pointer-events-auto flex w-full shrink-0 items-center justify-center bg-transparent p-4 pt-0 md:max-w-[90%]">
           <AIInput className="w-full max-w-3xl" onSubmit={onSubmit}>
-            <AIInputTextarea maxHeight={300} onChange={onInputChange} value={input} />
+            <AIInputTextarea minHeight={isMobile ? 60 : 80} maxHeight={300} onChange={onInputChange} value={input} />
             <AIInputToolbar>
               <AIInputTools>
                 <AIInputButton iconOnly>
