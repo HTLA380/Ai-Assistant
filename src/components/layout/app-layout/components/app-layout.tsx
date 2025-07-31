@@ -63,7 +63,7 @@ const AppLayout = ({ children, defaultValues = appLayoutDefaultValues, panelSlot
       <ResizableLayoutProvider defaultPanels={defaultValues.panels} onPanelChange={onPanelChange}>
         <SidebarProvider>
           <div
-            className="flex h-screen w-full bg-background"
+            className="flex h-svh w-full bg-background"
             style={
               {
                 "--main-area-padding": MAIN_AREA_PADDING,

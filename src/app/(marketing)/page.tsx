@@ -10,7 +10,7 @@ import { Footer } from "./_components/footer"
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen transition-colors duration-300">
+    <div className="min-h-svh transition-colors duration-300">
       <AnnouncementBar />
       <Navbar />
       <main>

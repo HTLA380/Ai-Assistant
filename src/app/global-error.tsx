@@ -12,7 +12,7 @@ export default function GlobalError({ error }: { error: Error & { digest?: strin
 
   return (
     <html>
-      <body className="flex min-h-screen w-full items-center justify-center">
+      <body className="flex min-h-svh w-full items-center justify-center">
         <div className="absolute left-10 top-5 flex items-center space-x-2">
           <Bot className="text-2xl text-primary" />
           <span className="text-xl font-bold">Pica Bot</span>

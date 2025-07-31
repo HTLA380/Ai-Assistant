@@ -5,7 +5,7 @@ import React from "react"
 
 const BasicHomeLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex h-screen flex-col transition-colors duration-300">
+    <div className="flex h-svh flex-col transition-colors duration-300">
       <DarkBlueRadialGradient />
       <Navbar />
       <div className="flex grow items-center justify-center">{children}</div>
