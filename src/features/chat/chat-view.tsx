@@ -1,10 +1,10 @@
 "use client"
 
+import React from "react"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { AnimatePresence, motion } from "framer-motion"
 import { GlobeIcon, Paperclip, Telescope } from "lucide-react"
-import React from "react"
-import Messages from "./components/messages"
+import { Messages } from "./components/messages"
 import { SuggestionItems } from "./components/suggestion-items"
 import {
   AIInput,
@@ -25,34 +25,38 @@ const PROMPT_AREA_HEIGHT = "5rem"
 /* -------------------------------------------------------------------------- */
 
 const ChatView = () => {
-  // Fetch the llm config ass soon as the content load.
   useLlmConfig()
 
   const { messages, status, input, setInput, handleSubmit } = useChat()
   const isMobile = useIsMobile()
 
   const hasConversation = messages.length > 0
+  const responsivePromptHeight = isMobile ? `calc(${PROMPT_AREA_HEIGHT} * 0.75)` : PROMPT_AREA_HEIGHT
 
-  const responsivePromptAreaHeight = isMobile ? `calc(${PROMPT_AREA_HEIGHT} * 0.75)` : PROMPT_AREA_HEIGHT
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value)
+  }
+
+  const isSubmitDisabled = !input || status === "streaming" || status === "loading-config"
 
   return (
     <div
-      className="relative"
+      className="relative h-[calc(100svh_-_var(--header-height))] md:h-[calc(100svh_-_var(--main-area-padding)_-_0.5rem)]"
       style={
         {
           "--chat-view-max-width": CHAT_VIEW_MAX_WIDTH,
-          "--prompt-area-height": responsivePromptAreaHeight,
+          "--prompt-area-height": responsivePromptHeight,
         } as React.CSSProperties
       }>
-      <AIConversation className="relative flex h-[calc(100svh_-_var(--header-height))] w-full overflow-auto md:h-[calc(100svh_-_var(--main-area-padding)_-_var(--header-height)_-_0.5rem)]">
+      <AIConversation className="relative flex size-full overflow-hidden">
         <AIConversationContent>
           <AnimatePresence>
-            <div className="mx-auto flex size-full flex-col gap-8 pb-[calc(var(--prompt-area-height)_+_10rem)] md:pb-[calc(var(--prompt-area-height)_+_12rem)]">
+            <div className="mx-auto flex size-full flex-col gap-8 pb-[calc(var(--prompt-area-height)_+_10rem)] md:pb-[calc(var(--prompt-area-height)_+_12rem)] md:pt-[var(--header-height)]">
               {hasConversation && (
                 <div className="mx-auto flex w-full max-w-[var(--chat-view-max-width)] flex-col gap-8">
                   {messages.map((message, index) => (
                     <Messages
-                      key={index}
+                      key={`message-${index}`}
                       role={message.role}
                       content={message.content}
                       isStreaming={status === "streaming" && index === messages.length - 1}
@@ -73,7 +77,7 @@ const ChatView = () => {
 
           {hasConversation && (
             <motion.div
-              key="panel"
+              key="conversation-panel"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "100%", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -84,12 +88,12 @@ const ChatView = () => {
 
           <motion.div
             layout
-            className="pointer-events-auto flex w-full shrink-0 items-center justify-center bg-transparent p-4 pt-0 md:max-w-[90%]">
+            className="pointer-events-auto flex w-full shrink-0 items-center justify-center bg-transparent p-4 pt-0 xl:max-w-[90%]">
             <AIInput className="w-full max-w-[var(--chat-view-max-width)]" onSubmit={handleSubmit}>
               <AIInputTextarea
-                minHeight={responsivePromptAreaHeight}
-                maxHeight={"300px"}
-                onChange={(e) => setInput(e.target.value)}
+                minHeight={responsivePromptHeight}
+                maxHeight="300px"
+                onChange={handleInputChange}
                 value={input}
               />
               <AIInputToolbar>
@@ -105,10 +109,7 @@ const ChatView = () => {
                     <span>Search</span>
                   </AIInputButton>
                 </AIInputTools>
-                <AIInputSubmit
-                  disabled={!input || status === "streaming" || status === "loading-config"}
-                  status={status}
-                />
+                <AIInputSubmit disabled={isSubmitDisabled} status={status} />
               </AIInputToolbar>
             </AIInput>
           </motion.div>

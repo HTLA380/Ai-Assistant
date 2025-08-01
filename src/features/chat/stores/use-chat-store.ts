@@ -30,14 +30,7 @@ type ChatActions = {
 export type ChatStore = ChatState & ChatActions
 
 const initialState: ChatState = {
-  messages: [
-    {
-      role: "assistant",
-
-      content:
-        '```jsx\nimport React from \\"react\\";\nimport { Prism as SyntaxHighlighter } from \\"react-syntax-highlighter\\";\nimport { okaidia } from \\"react-syntax-highlighter/dist/esm/styles/prism\\";\n\n/**\n * Props:\n *   code      : String - The code to display\n *   language  : String - Programming language (e.g., \'javascript\', \'python\')\n */\n\nconst CodeBlock = ({ code, language = \\"javascript\\" }) => (\n  <SyntaxHighlighter language={language} style={okaidia}>\n    {code}\n  </SyntaxHighlighter>\n);\n\nexport default CodeBlock;\n```\n\n```jsx\nimport React from \\"react\\";\nimport { Prism as SyntaxHighlighter } from \\"react-syntax-highlighter\\";\nimport { okaidia } from \\"react-syntax-highlighter/dist/esm/styles/prism\\";\n\n/**\n * Props:\n *   code      : String - The code to display\n *   language  : String - Programming language (e.g., \'javascript\', \'python\')\n */\n\nconst CodeBlock = ({ code, language = \\"javascript\\" }) => (\n  <SyntaxHighlighter language={language} style={okaidia}>\n    {code}\n  </SyntaxHighlighter>\n);\n\nexport default CodeBlock;\n```',
-    },
-  ],
+  messages: [],
   status: "ready",
   input: "",
   previousResponseId: null,

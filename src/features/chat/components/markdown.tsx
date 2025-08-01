@@ -104,7 +104,10 @@ const FencedCodeBlock = ({ language, filename, code }: FencedCodeBlockProps) => 
   }
 
   return (
-    <CodeBlock className="relative my-4" data={data} defaultValue={data[0].language}>
+    <CodeBlock
+      className="not-prose relative my-4 w-full md:max-w-lg lg:max-w-none"
+      data={data}
+      defaultValue={data[0].language}>
       {filename ? (
         <CodeBlockHeader>
           <CodeBlockFiles>
@@ -127,7 +130,7 @@ const FencedCodeBlock = ({ language, filename, code }: FencedCodeBlockProps) => 
         />
       )}
 
-      <CodeBlockBody>
+      <CodeBlockBody className="overflow-visible!">
         {(item) => (
           <CodeBlockItem key={item.language} value={item.language}>
             <CodeBlockContent language={item.language as BundledLanguage} className="text-sm">
