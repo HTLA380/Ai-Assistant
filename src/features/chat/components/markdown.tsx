@@ -29,7 +29,7 @@ const components: Options["components"] = {
   h4: ({ node: _, ...props }) => <h4 className="text-md font-semibold sm:text-lg" {...props} />,
   h5: ({ node: _, ...props }) => <h5 className="text-base font-semibold" {...props} />,
   h6: ({ node: _, ...props }) => <h6 className="text-sm font-semibold" {...props} />,
-  pre: ({ node: _, className, ...props }) => <pre className={cn("not-prose", className)} {...props} />,
+  pre: ({ node: _, className, ...props }) => <pre className={cn("not-prose w-full", className)} {...props} />,
   code: ({ node, className, children, ...props }) => {
     const match = /language-(\w+)/.exec(className || "")
     const codeContent = String(children).replace(/\n$/, "")
@@ -64,7 +64,12 @@ export type MarkdownProps = HTMLAttributes<HTMLDivElement> & {
 
 export const Markdown = memo(
   ({ className, options, children, ...props }: MarkdownProps) => (
-    <div className={cn("size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0", className)} {...props}>
+    <div
+      className={cn(
+        "size-full w-[var(--chat-view-max-height)] [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+        className,
+      )}
+      {...props}>
       <ReactMarkdown
         components={{ ...components, ...options?.components }}
         rehypePlugins={[rehypeKatex]}
@@ -99,7 +104,7 @@ const FencedCodeBlock = ({ language, filename, code }: FencedCodeBlockProps) => 
   }
 
   return (
-    <CodeBlock className="relative" data={data} defaultValue={data[0].language}>
+    <CodeBlock className="relative my-4" data={data} defaultValue={data[0].language}>
       {filename ? (
         <CodeBlockHeader>
           <CodeBlockFiles>
@@ -125,7 +130,9 @@ const FencedCodeBlock = ({ language, filename, code }: FencedCodeBlockProps) => 
       <CodeBlockBody>
         {(item) => (
           <CodeBlockItem key={item.language} value={item.language}>
-            <CodeBlockContent language={item.language as BundledLanguage}>{item.code}</CodeBlockContent>
+            <CodeBlockContent language={item.language as BundledLanguage} className="text-sm">
+              {item.code}
+            </CodeBlockContent>
           </CodeBlockItem>
         )}
       </CodeBlockBody>

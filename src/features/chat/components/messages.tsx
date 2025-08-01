@@ -14,7 +14,10 @@ type MessagesProps = {
 
 const Messages = ({ role, content, isStreaming }: MessagesProps) => {
   const UserMessage = (
-    <div className={cn("min-w-fit max-w-[70%] rounded-lg bg-background px-4 py-2.5 text-sm shadow-xs")}>
+    <div
+      className={cn(
+        "min-w-fit max-w-[calc(var(--chat-view-max-width)*0.7)] rounded-lg bg-background px-4 py-2.5 text-sm shadow-xs",
+      )}>
       <p>{content}</p>
     </div>
   )

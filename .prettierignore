@@ -1,0 +1,33 @@
+# Build outputs
+.next/
+out/
+build/
+
+# Dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Lockfiles
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Test coverage
+coverage/
+
+# Environment variables
+.env*
+
+# Next.js generated
+next-env.d.ts
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Vercel
+.vercel

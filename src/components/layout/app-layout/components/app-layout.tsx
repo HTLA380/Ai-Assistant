@@ -32,9 +32,10 @@ import {
 /*                               Constants / IDs                              */
 /* -------------------------------------------------------------------------- */
 
+const RESIZABLE_LAYOUT_PANEL_ID = "left_panel"
+
 const MAIN_AREA_PADDING = "0.5rem"
 const HEADER_HEIGHT = "3.5rem"
-const RESIZABLE_LAYOUT_PANEL_ID = "left_panel"
 
 /* -------------------------------------------------------------------------- */
 
@@ -124,7 +125,7 @@ const AppLayoutDesktopContent = ({ sizes, headerSlot, panelSlot, children }: App
             {headerSlot}
           </div>
 
-          <div className="pt-[var(--header-height)]">{children}</div>
+          {children}
         </ResizableLayoutContent>
       </ResizableLayoutGroup>
     </main>
@@ -138,7 +139,7 @@ type AppLayoutMobileContentProps = Pick<AppLayoutProps, "headerSlot" | "panelSlo
 const AppLayoutMobileContent = ({ headerSlot, panelSlot, children }: AppLayoutMobileContentProps) => {
   return (
     <main className="size-full bg-secondary md:rounded-md">
-      <div className="relative">
+      <div className="relative w-full">
         <div className="sticky z-50 flex h-[var(--header-height)] items-center justify-between bg-secondary px-4">
           <Drawer>
             <DrawerTrigger asChild>
@@ -169,7 +170,7 @@ const AppLayoutMobileContent = ({ headerSlot, panelSlot, children }: AppLayoutMo
           <div className="flex items-center gap-2">{headerSlot}</div>
         </div>
 
-        <div>{children}</div>
+        <div className="w-screen">{children}</div>
       </div>
     </main>
   )

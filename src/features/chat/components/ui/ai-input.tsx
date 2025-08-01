@@ -6,8 +6,8 @@ import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, 
 import { Loader2Icon, SendIcon, Square, XIcon } from "lucide-react"
 
 type UseAutoResizeTextareaProps = {
-  minHeight: number
-  maxHeight?: number
+  minHeight: string
+  maxHeight?: string
 }
 
 const useAutoResizeTextarea = ({ minHeight, maxHeight }: UseAutoResizeTextareaProps) => {
@@ -19,12 +19,15 @@ const useAutoResizeTextarea = ({ minHeight, maxHeight }: UseAutoResizeTextareaPr
       if (!textarea) return
 
       if (reset) {
-        textarea.style.height = `${minHeight}px`
+        textarea.style.height = minHeight
         return
       }
 
-      textarea.style.height = `${minHeight}px` // collapse before measuring
-      const newHeight = Math.max(minHeight, Math.min(textarea.scrollHeight, maxHeight ?? Infinity))
+      textarea.style.height = minHeight
+      const newHeight = Math.max(
+        convertToPx(minHeight),
+        Math.min(textarea.scrollHeight, convertToPx(maxHeight) ?? Infinity),
+      )
 
       textarea.style.height = `${newHeight}px`
       document.documentElement.style.setProperty("--prompt-area-height", `${newHeight}px`)
@@ -35,8 +38,7 @@ const useAutoResizeTextarea = ({ minHeight, maxHeight }: UseAutoResizeTextareaPr
   useEffect(() => {
     const textarea = textareaRef.current
     if (textarea) {
-      textarea.style.height = `${minHeight}px`
-      document.documentElement.style.setProperty("--prompt-area-height", `${minHeight}px`)
+      textarea.style.height = minHeight
     }
   }, [minHeight])
 
@@ -78,16 +80,16 @@ export const AIInput = ({ className, ...props }: AIInputProps) => (
 )
 
 export type AIInputTextareaProps = ComponentProps<typeof Textarea> & {
-  minHeight?: number
-  maxHeight?: number
+  minHeight?: string
+  maxHeight?: string
 }
 
 export const AIInputTextarea = ({
   onChange,
   className,
   placeholder = "What would you like to know?",
-  minHeight = 80,
-  maxHeight = 164,
+  minHeight = "80px",
+  maxHeight = "164px",
   ...props
 }: AIInputTextareaProps) => {
   const { textareaRef, adjustHeight } = useAutoResizeTextarea({
@@ -215,3 +217,34 @@ export type AIInputModelSelectValueProps = ComponentProps<typeof SelectValue>
 export const AIInputModelSelectValue = ({ className, ...props }: AIInputModelSelectValueProps) => (
   <SelectValue className={cn(className)} {...props} />
 )
+
+/* -------------------------------------------------------------------------- */
+/*                                    Utils                                   */
+/* -------------------------------------------------------------------------- */
+function convertToPx(value?: string) {
+  if (!value || typeof value !== "string") {
+    return 0
+  }
+
+  const cleanValue = value.trim().toLowerCase()
+
+  const match = cleanValue.match(/^(-?\d*\.?\d+)(px|rem)$/)
+
+  if (!match) {
+    console.warn(`Invalid value format: ${value}`)
+    return 0
+  }
+
+  const [, number, unit] = match
+  const numValue = parseFloat(number)
+
+  if (unit === "px") {
+    return numValue
+  } else if (unit === "rem") {
+    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+
+    return numValue * rootFontSize
+  }
+
+  return 0
+}
