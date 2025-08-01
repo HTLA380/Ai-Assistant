@@ -1,52 +1,32 @@
+"use client"
+
 import { cn } from "@mijn-ui/react"
-import ReactMarkdown, { type Components } from "react-markdown"
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
-import { a11yDark } from "react-syntax-highlighter/dist/cjs/styles/prism"
+import "katex/dist/katex.min.css"
+import type { HTMLAttributes } from "react"
+import React, { memo } from "react"
+import ReactMarkdown, { type Options } from "react-markdown"
+import rehypeKatex from "rehype-katex"
 import remarkGfm from "remark-gfm"
+import remarkMath from "remark-math"
+import {
+  BundledLanguage,
+  CodeBlock,
+  CodeBlockBody,
+  CodeBlockContent,
+  CodeBlockCopyButton,
+  CodeBlockFilename,
+  CodeBlockFiles,
+  CodeBlockHeader,
+  CodeBlockItem,
+  CodeBlockProps,
+} from "./code-block"
 
-const components: Partial<Components> = {
-  code({ node: _, inline, className, children, ...props }: any) {
-    const match = /language-(\w+)/.exec(className || "")
+export type MarkdownProps = HTMLAttributes<HTMLDivElement> & {
+  options?: Options
+  children: Options["children"]
+}
 
-    return !inline && match ? (
-      <SyntaxHighlighter
-        lineProps={{
-          style: { wordBreak: "break-all", whiteSpace: "pre-wrap" },
-        }}
-        codeTagProps={{
-          style: { display: "block", width: "50%" },
-        }}
-        customStyle={{
-          borderRadius: "0.75rem",
-          fontSize: "0.75rem",
-        }}
-        style={a11yDark}
-        PreTag={(props) => <div className="max-w-[calc(100vw-32px)] md:max-w-none" {...props} />}
-        language={match[1]}
-        {...props}>
-        {String(children).replace(/\n$/, "")}
-      </SyntaxHighlighter>
-    ) : (
-      <code className={cn("rounded-md bg-neutral-300 px-1 py-0.5 text-sm dark:bg-neutral-800", className)} {...props}>
-        {children}
-      </code>
-    )
-  },
-  input: ({ node: _, type, checked, ...props }) => {
-    if (type === "checkbox") {
-      return (
-        <input
-          type={type}
-          checked={checked}
-          className="pointer-events-none size-3.5 rounded-xs border-border bg-background text-blue-600 outline-none ring-offset-2 focus:ring-2 focus:ring-blue-600 focus:ring-offset-background"
-          {...props}
-          disabled={false}
-        />
-      )
-    }
-
-    return
-  },
+const components: Options["components"] = {
   h1: ({ node: _, children, ...props }) => {
     return (
       <h1 className="text-2xl font-semibold sm:text-3xl" {...props}>
@@ -89,16 +69,95 @@ const components: Partial<Components> = {
       </h6>
     )
   },
+  code: ({ node, className, children, ...props }) => {
+    const match = /language-(\w+)/.exec(className || "") ?? "plaintext"
+    const language = match[0].replace("language-", "")
+
+    if (!match) {
+      return (
+        <code {...props} className={className}>
+          {children}
+        </code>
+      )
+    }
+
+    let filename = ""
+
+    // Check for metadata in the node or extract from code content
+    if (node?.data?.meta) {
+      // Handle metadata like ```typescript filename="example.ts"
+      const metaString = node.data.meta
+      const filenameMatch = metaString.match(/filename=["']([^"']+)["']/)
+      if (filenameMatch) {
+        filename = filenameMatch[1]
+      }
+    }
+
+    const code = String(children).replace(/\n$/, "") ?? ""
+
+    const data: CodeBlockProps["data"] = [
+      {
+        language,
+        filename,
+        code,
+      },
+    ]
+
+    return (
+      <CodeBlock className="relative" data={data} defaultValue={data[0].language}>
+        {filename ? (
+          <CodeBlockHeader>
+            <CodeBlockFiles>
+              {(item) => (
+                <CodeBlockFilename
+                  className="bg-transparent text-secondary-foreground"
+                  key={item.language}
+                  value={item.language}>
+                  {item.filename}
+                </CodeBlockFilename>
+              )}
+            </CodeBlockFiles>
+            <CodeBlockCopyButton
+              onCopy={() => console.log("Copied code to clipboard")}
+              onError={() => console.error("Failed to copy code to clipboard")}
+            />
+          </CodeBlockHeader>
+        ) : (
+          <CodeBlockCopyButton
+            className="absolute right-2 top-2 z-10 [&>svg]:text-foreground/80"
+            onCopy={() => console.log("Copied code to clipboard")}
+            onError={() => console.error("Failed to copy code to clipboard")}
+          />
+        )}
+
+        <CodeBlockBody>
+          {(item) => (
+            <CodeBlockItem key={item.language} value={item.language}>
+              <CodeBlockContent language={item.language as BundledLanguage}>{item.code}</CodeBlockContent>
+            </CodeBlockItem>
+          )}
+        </CodeBlockBody>
+      </CodeBlock>
+    )
+  },
+  pre: ({ node: _, className, ...props }) => {
+    return <pre className={cn("not-prose", className)} {...props} />
+  },
 }
 
-const remarkPlugins = [remarkGfm]
+export const Markdown = memo(
+  ({ className, options, children, ...props }: MarkdownProps) => (
+    <div className={cn("size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0", className)} {...props}>
+      <ReactMarkdown
+        components={components}
+        rehypePlugins={[rehypeKatex]}
+        remarkPlugins={[remarkGfm, remarkMath]}
+        {...options}>
+        {children}
+      </ReactMarkdown>
+    </div>
+  ),
+  (prevProps, nextProps) => prevProps.children === nextProps.children,
+)
 
-const Markdown = ({ children }: { children: string }) => {
-  return (
-    <ReactMarkdown remarkPlugins={remarkPlugins} components={components}>
-      {children}
-    </ReactMarkdown>
-  )
-}
-
-export { Markdown }
+Markdown.displayName = "Markdown"

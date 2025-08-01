@@ -30,7 +30,7 @@ const Messages = ({ role, content, isStreaming }: MessagesProps) => {
         {/* TODO: Replace this with an actual data */}
         <p className="text-xs font-medium text-secondary-foreground">GPT4.1</p>
       </div>
-      <div className="markdown prose max-w-none text-sm dark:prose-invert">
+      <div className="markdown prose w-full max-w-none text-sm dark:prose-invert">
         <Markdown>{content}</Markdown>
       </div>
     </>
