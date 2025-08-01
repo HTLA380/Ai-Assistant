@@ -1,7 +1,7 @@
 "use client"
 
-import { ErrorDisplay } from "@/components/error-display"
 import { useEffect } from "react"
+import { ErrorDisplay } from "@/components/error-display"
 import { BasicHomeLayout } from "./_components/basic-home-layout"
 
 export default function LandingError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {

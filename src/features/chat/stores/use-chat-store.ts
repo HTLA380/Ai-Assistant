@@ -1,5 +1,5 @@
-import { LlmConfigResponse } from "@/lib/llm/types/llm"
 import { create } from "zustand"
+import { LlmConfigResponse } from "@/lib/llm/types/llm"
 
 export type Message = {
   role: "user" | "assistant"

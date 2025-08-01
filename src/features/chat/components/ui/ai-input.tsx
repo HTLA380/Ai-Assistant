@@ -1,9 +1,9 @@
 "use client"
 
-import { Button, cn, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Textarea } from "@mijn-ui/react"
-import { Loader2Icon, SendIcon, Square, XIcon } from "lucide-react"
 import type { ComponentProps, HTMLAttributes, KeyboardEventHandler } from "react"
 import { useCallback, useEffect, useRef } from "react"
+import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Textarea, cn } from "@mijn-ui/react"
+import { Loader2Icon, SendIcon, Square, XIcon } from "lucide-react"
 
 type UseAutoResizeTextareaProps = {
   minHeight: number

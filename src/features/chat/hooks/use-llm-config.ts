@@ -1,8 +1,8 @@
+import { useEffect } from "react"
 import { useChatStore } from "@/features/chat/stores/use-chat-store"
+import { useQuery } from "@tanstack/react-query"
 import axiosClient from "@/lib/axios-client"
 import { LlmConfigResponse } from "@/lib/llm/types/llm"
-import { useQuery } from "@tanstack/react-query"
-import { useEffect } from "react"
 
 export const llmConfigKeys = {
   all: ["llm-config"] as const,

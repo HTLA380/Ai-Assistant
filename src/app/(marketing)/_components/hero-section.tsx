@@ -1,6 +1,6 @@
+import Link from "next/link"
 import { Button } from "@mijn-ui/react"
 import { ArrowRight, Bot, Play } from "lucide-react"
-import Link from "next/link"
 import { DarkBlueRadialGradient } from "./gradient-decorators"
 
 export const HeroSection = () => {

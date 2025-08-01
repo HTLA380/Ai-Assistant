@@ -1,14 +1,12 @@
-import { AuthStoreProvider } from "@/features/auth/stores/auth-store-provider"
-
-import { getCurrentUser } from "@/lib/auth"
-
-import { AppLayout as AppLayoutUI, getServerSideAppLayoutCookieData } from "@/components/layout/app-layout"
-import { UserProfile } from "@/features/auth/components/user-profile"
 import React from "react"
-import { DynamicPanelContent } from "@/features/panel/dynamic-panel-content"
-import { UserAgentProvider } from "@/components/providers/user-agent-provider"
 import { headers } from "next/headers"
 import { userAgent } from "next/server"
+import { UserProfile } from "@/features/auth/components/user-profile"
+import { AuthStoreProvider } from "@/features/auth/stores/auth-store-provider"
+import { DynamicPanelContent } from "@/features/panel/dynamic-panel-content"
+import { getCurrentUser } from "@/lib/auth"
+import { AppLayout as AppLayoutUI, getServerSideAppLayoutCookieData } from "@/components/layout/app-layout"
+import { UserAgentProvider } from "@/components/providers/user-agent-provider"
 
 const TEMP_USER_INFO_UNTIL_AUTH_READY = {
   id: "1",

@@ -2,20 +2,21 @@
 "use client"
 
 import * as React from "react"
+import { cn } from "@mijn-ui/react"
+import { Label } from "@mijn-ui/react"
 import * as LabelPrimitive from "@radix-ui/react-label"
 import { Slot } from "@radix-ui/react-slot"
 import {
   Controller,
-  FormProvider,
-  useFormContext,
-  useFormState,
   type ControllerProps,
   type FieldPath,
   type FieldValues,
+  FormProvider,
+  useFormContext,
+  useFormState,
 } from "react-hook-form"
 
-import { cn } from "@mijn-ui/react"
-import { Label } from "@mijn-ui/react"
+// Adapted from Shadcn UI
 
 const Form = FormProvider
 

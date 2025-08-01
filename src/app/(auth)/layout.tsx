@@ -1,5 +1,5 @@
-import { Bot } from "lucide-react"
 import Link from "next/link"
+import { Bot } from "lucide-react"
 
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   return (

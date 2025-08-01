@@ -1,14 +1,14 @@
 "use client"
 
+import React, { useCallback, useEffect, useRef, useState } from "react"
+import { createContext } from "@/utils/create-context"
 import { cn } from "@mijn-ui/react"
+import { Button } from "@mijn-ui/react"
 import { Slot } from "@radix-ui/react-slot"
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
-import React, { useCallback, useEffect, useRef, useState } from "react"
 import { ImperativePanelHandle } from "react-resizable-panels"
-import { Button } from "@mijn-ui/react"
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { useControlledState } from "@/hooks/use-controlled-state"
-import { createContext } from "@/utils/create-context"
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 
 /* -------------------------------------------------------------------------- */
 /*                           ResizableLayoutContext                           */

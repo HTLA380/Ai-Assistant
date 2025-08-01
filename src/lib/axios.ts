@@ -1,6 +1,6 @@
 import axios from "axios"
-import { ACCESS_TOKEN } from "./auth"
 import { getCookie } from "../utils/cookies/server"
+import { ACCESS_TOKEN } from "./auth"
 
 const axiosServer = axios.create({
   baseURL: process.env.EXTERNAL_API_URL,

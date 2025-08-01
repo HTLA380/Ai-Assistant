@@ -1,15 +1,15 @@
 "use client"
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { register } from "../api/actions"
+import { useTransition } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Separator } from "@mijn-ui/react"
 import { Button } from "@mijn-ui/react"
 import { Input } from "@mijn-ui/react"
-import { useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { registerFormSchema, RegisterFormValues } from "../schema"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { register } from "../api/actions"
+import { RegisterFormValues, registerFormSchema } from "../schema"
 
 const RegisterForm = () => {
   const [loading, startTransition] = useTransition()

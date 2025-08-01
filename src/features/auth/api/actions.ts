@@ -1,9 +1,9 @@
 "use server"
 
+import { redirect } from "next/navigation"
+import { deleteCookie, setCookie } from "@/utils/cookies/server"
 import { ACCESS_TOKEN, REFRESH_TOKEN, User } from "@/lib/auth"
 import axiosServer from "@/lib/axios"
-import { deleteCookie, setCookie } from "@/utils/cookies/server"
-import { redirect } from "next/navigation"
 import { LoginFormValues, RegisterFormValues } from "../schema"
 
 export type AuthResponse = {

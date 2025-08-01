@@ -1,11 +1,11 @@
 "use client"
 
-import { ThemeToggler } from "@/components/ui/theme-toggler"
+import * as React from "react"
+import Link from "next/link"
 import { Button, cn } from "@mijn-ui/react"
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu"
 import { ChevronDown, Menu, X } from "lucide-react"
-import Link from "next/link"
-import * as React from "react"
+import { ThemeToggler } from "@/components/ui/theme-toggler"
 import { NavItem, navItems } from "./constants"
 
 const NavigationMenu = () => {

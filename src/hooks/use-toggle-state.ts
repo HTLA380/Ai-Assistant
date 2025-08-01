@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react"
-
 import type { Dispatch, SetStateAction } from "react"
 
 function useToggleState(defaultValue?: boolean): [boolean, () => void, Dispatch<SetStateAction<boolean>>] {

@@ -1,5 +1,5 @@
-import { LlmConfigResponse } from "@/lib/llm/types/llm"
 import { NextRequest } from "next/server"
+import { LlmConfigResponse } from "@/lib/llm/types/llm"
 
 export const runtime = "edge"
 

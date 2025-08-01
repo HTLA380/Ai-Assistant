@@ -1,6 +1,6 @@
 import Link from "next/link"
-import { NavigationMenu } from "./navigation-menu"
 import { Bot } from "lucide-react"
+import { NavigationMenu } from "./navigation-menu"
 
 const Navbar = () => {
   return (

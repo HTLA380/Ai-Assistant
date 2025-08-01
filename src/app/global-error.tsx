@@ -1,8 +1,8 @@
 "use client"
 
-import { ErrorDisplay } from "@/components/error-display"
-import { Bot } from "lucide-react"
 import { useEffect } from "react"
+import { Bot } from "lucide-react"
+import { ErrorDisplay } from "@/components/error-display"
 
 export default function GlobalError({ error }: { error: Error & { digest?: string } }) {
   useEffect(() => {

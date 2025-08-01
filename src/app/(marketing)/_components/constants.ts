@@ -1,4 +1,4 @@
-import { FileText, MessageCircle, Package, Shield, Users, Zap, type LucideIcon } from "lucide-react"
+import { FileText, type LucideIcon, MessageCircle, Package, Shield, Users, Zap } from "lucide-react"
 
 export const features: {
   icon: LucideIcon

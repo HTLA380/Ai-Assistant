@@ -1,7 +1,7 @@
+import React from "react"
 import { Footer } from "./footer"
 import { DarkBlueRadialGradient } from "./gradient-decorators"
 import { Navbar } from "./navbar"
-import React from "react"
 
 const BasicHomeLayout = ({ children }: { children: React.ReactNode }) => {
   return (

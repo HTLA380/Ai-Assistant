@@ -1,5 +1,5 @@
-import { NextResponse, type NextRequest } from "next/server"
-import { ACCESS_TOKEN, refresh, REFRESH_TOKEN, validateToken } from "@/lib/auth"
+import { type NextRequest, NextResponse } from "next/server"
+import { ACCESS_TOKEN, REFRESH_TOKEN, refresh, validateToken } from "@/lib/auth"
 
 const publicRoutes = ["/", "/login", "/register"]
 const protectedRoutes = ["/dashboard", "/upload", "/agent"]

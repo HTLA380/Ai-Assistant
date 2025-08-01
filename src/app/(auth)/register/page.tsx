@@ -1,6 +1,6 @@
+import Link from "next/link"
 import { RegisterForm } from "@/features/auth/components/register-form"
 import { Card } from "@mijn-ui/react"
-import Link from "next/link"
 
 const RegisterPage = () => {
   return (

@@ -1,8 +1,9 @@
 "use client"
-import { motion } from "framer-motion"
-import { Button, cn } from "@mijn-ui/react"
-import Image from "next/image"
+
 import React from "react"
+import Image from "next/image"
+import { Button, cn } from "@mijn-ui/react"
+import { motion } from "framer-motion"
 import { Markdown } from "./markdown"
 
 type MessagesProps = {

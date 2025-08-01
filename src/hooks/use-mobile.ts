@@ -1,8 +1,8 @@
 "use client"
 
-import { useUserAgent } from "@/components/providers/user-agent-provider"
 import { useEffect, useState } from "react"
 import { UAParser } from "ua-parser-js"
+import { useUserAgent } from "@/components/providers/user-agent-provider"
 
 export const useIsMobile = () => {
   const userAgent = useUserAgent()

@@ -1,6 +1,6 @@
 "use client"
 
-import { ThemeToggler } from "@/components/ui/theme-toggler"
+import Link from "next/link"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,9 +24,9 @@ import {
   DropdownMenuTrigger,
 } from "@mijn-ui/react"
 import { ExternalLink, FileSpreadsheet, LogOut, Moon, Settings, Sun } from "lucide-react"
-import Link from "next/link"
-import { logout } from "../api/actions"
 import { User } from "@/lib/auth"
+import { ThemeToggler } from "@/components/ui/theme-toggler"
+import { logout } from "../api/actions"
 
 const UserProfile = ({ user }: { user: User | null }) => {
   const handleLogout = async () => {

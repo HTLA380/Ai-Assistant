@@ -1,7 +1,7 @@
 "use client"
 
-import { cn } from "@mijn-ui/react"
 import * as React from "react"
+import { cn } from "@mijn-ui/react"
 import { Drawer as DrawerPrimitive } from "vaul"
 
 const Drawer = DrawerPrimitive.Root

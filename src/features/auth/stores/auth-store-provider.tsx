@@ -1,9 +1,8 @@
 "use client"
 
-import { type ReactNode, createContext, useRef, useContext, useEffect } from "react"
+import { type ReactNode, createContext, useContext, useEffect, useRef } from "react"
 import { useStore } from "zustand"
-
-import { type AuthStore, createAuthStore, type AuthState, authStore } from "./use-auth-store"
+import { type AuthState, type AuthStore, authStore, createAuthStore } from "./use-auth-store"
 
 export type AuthStoreApi = ReturnType<typeof createAuthStore>
 

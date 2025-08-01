@@ -1,7 +1,7 @@
 "use client"
 
-import { createContext } from "@/utils/create-context"
 import { userAgent } from "next/server"
+import { createContext } from "@/utils/create-context"
 
 export type UserAgentContextType = ReturnType<typeof userAgent>
 

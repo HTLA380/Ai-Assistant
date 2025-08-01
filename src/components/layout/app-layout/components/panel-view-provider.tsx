@@ -1,9 +1,9 @@
 "use client"
 
-import { createContext } from "@/utils/create-context"
 import React, { useCallback, useState } from "react"
-import { PanelViewType } from "../constants"
+import { createContext } from "@/utils/create-context"
 import { Slot } from "@radix-ui/react-slot"
+import { PanelViewType } from "../constants"
 import { updateResizableLayoutCookie } from "../utils/cookies/client"
 
 type AppLayoutPanelViewContextType = {

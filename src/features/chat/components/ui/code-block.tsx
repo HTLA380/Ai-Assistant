@@ -1,5 +1,7 @@
 "use client"
 
+import type { ComponentProps, HTMLAttributes, ReactElement, ReactNode } from "react"
+import { cloneElement, createContext, useContext, useEffect, useState } from "react"
 import {
   type IconType,
   SiAstro,
@@ -71,6 +73,8 @@ import {
   SiVuedotjs,
   SiWebassembly,
 } from "@icons-pack/react-simple-icons"
+import { Button } from "@mijn-ui/react"
+import { cn } from "@mijn-ui/react"
 import { useControllableState } from "@radix-ui/react-use-controllable-state"
 import {
   transformerNotationDiff,
@@ -80,12 +84,7 @@ import {
   transformerNotationWordHighlight,
 } from "@shikijs/transformers"
 import { CheckIcon, CopyIcon } from "lucide-react"
-import type { ComponentProps, HTMLAttributes, ReactElement, ReactNode } from "react"
-import { cloneElement, createContext, useContext, useEffect, useState } from "react"
 import { type BundledLanguage, type CodeOptionsMultipleThemes, codeToHtml } from "shiki/bundle-web.mjs"
-import { Button } from "@mijn-ui/react"
-
-import { cn } from "@mijn-ui/react"
 
 export type { BundledLanguage } from "shiki/bundle-web.mjs"
 

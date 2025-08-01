@@ -1,11 +1,11 @@
 "use client"
 
 import { useAppLayoutPanelViewContext } from "@/components/layout/app-layout/components/panel-view-provider"
+import { PANEL_VIEWS } from "@/components/layout/app-layout/constants"
 import { AgentsView } from "./components/agents-view"
 import { HistoryView } from "./components/history-view"
 import { ProjectsView } from "./components/projects-view"
 import { UploadsView } from "./components/uploads-view"
-import { PANEL_VIEWS } from "@/components/layout/app-layout/constants"
 
 export const DynamicPanelContent = () => {
   const { activePanelView } = useAppLayoutPanelViewContext()

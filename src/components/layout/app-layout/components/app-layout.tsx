@@ -1,5 +1,11 @@
 "use client"
 
+import React, { useCallback } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { Button, ScrollArea, tabsStyles } from "@mijn-ui/react"
+import { Menu, X } from "lucide-react"
+import { useIsMobile } from "@/hooks/use-mobile"
 import {
   Sidebar,
   SidebarContent,
@@ -9,12 +15,6 @@ import {
   SidebarToggler,
 } from "@/components/sidebar"
 import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
-import { useIsMobile } from "@/hooks/use-mobile"
-import { Button, ScrollArea, tabsStyles } from "@mijn-ui/react"
-import { Menu, X } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import React, { useCallback } from "react"
 import { SIDEBAR_NAV_ITEMS } from "../constants"
 import { updateResizableLayoutCookie } from "../utils/cookies/client"
 import { AppLayoutCookieData } from "../utils/cookies/constants"

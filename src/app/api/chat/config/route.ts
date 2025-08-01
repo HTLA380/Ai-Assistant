@@ -1,5 +1,5 @@
-import { getLlmConfiguration } from "@/lib/llm/config/getLlmConfiguration"
 import { NextResponse } from "next/server"
+import { getLlmConfiguration } from "@/lib/llm/config/getLlmConfiguration"
 
 export async function GET() {
   try {

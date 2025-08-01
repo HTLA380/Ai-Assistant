@@ -1,12 +1,12 @@
 "use client"
 
-import { useControlledState } from "@/hooks/use-controlled-state"
+import { useCallback } from "react"
 import { createContext } from "@/utils/create-context"
 import { Button, buttonStyles, cn } from "@mijn-ui/react"
-import { useCallback } from "react"
-import { Tooltip } from "@/components/tooltip-wrapper"
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
 import { Slot } from "@radix-ui/react-slot"
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
+import { useControlledState } from "@/hooks/use-controlled-state"
+import { Tooltip } from "@/components/tooltip-wrapper"
 
 const SIDEBAR_WIDTH = "4.5rem"
 
