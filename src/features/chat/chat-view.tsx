@@ -19,9 +19,6 @@ import { WelcomeMessage } from "./components/welcome-message"
 import { useChat } from "./hooks/use-chat"
 import { useLlmConfig } from "./hooks/use-llm-config"
 
-const CHAT_VIEW_MAX_WIDTH = "48rem"
-const PROMPT_AREA_HEIGHT = "5rem"
-
 /* -------------------------------------------------------------------------- */
 
 const ChatView = () => {
@@ -31,7 +28,6 @@ const ChatView = () => {
   const isMobile = useIsMobile()
 
   const hasConversation = messages.length > 0
-  const responsivePromptHeight = isMobile ? `calc(${PROMPT_AREA_HEIGHT} * 0.75)` : PROMPT_AREA_HEIGHT
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value)
@@ -39,13 +35,15 @@ const ChatView = () => {
 
   const isSubmitDisabled = !input || status === "streaming" || status === "loading-config"
 
+  const promptAreaHeight = isMobile ? 60 : 80
+
   return (
     <div
       className="relative h-[calc(100svh_-_var(--header-height))] md:h-[calc(100svh_-_var(--main-area-padding)_-_0.5rem)]"
       style={
         {
-          "--chat-view-max-width": CHAT_VIEW_MAX_WIDTH,
-          "--prompt-area-height": responsivePromptHeight,
+          "--chat-view-max-width": "48rem",
+          "--prompt-area-height": `${promptAreaHeight}px`,
         } as React.CSSProperties
       }>
       <AIConversation className="relative flex size-full overflow-hidden">
@@ -93,8 +91,8 @@ const ChatView = () => {
             className="pointer-events-auto flex w-full shrink-0 items-center justify-center bg-transparent p-4 pt-0 xl:max-w-[90%]">
             <AIInput className="w-full max-w-[var(--chat-view-max-width)]" onSubmit={handleSubmit}>
               <AIInputTextarea
-                minHeight={responsivePromptHeight}
-                maxHeight="300px"
+                minHeight={promptAreaHeight}
+                maxHeight={300}
                 onChange={handleInputChange}
                 value={input}
               />

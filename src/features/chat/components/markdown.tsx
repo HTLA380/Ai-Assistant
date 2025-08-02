@@ -48,7 +48,9 @@ const components: Options["components"] = {
     }
 
     return (
-      <code className={cn("not-prose rounded-md bg-muted px-1.5 py-1 font-mono text-sm", className)} {...props}>
+      <code
+        className={cn("wra whitespace-pre-wrap break-all rounded-md bg-muted px-1.5 py-0.5 text-sm", className)}
+        {...props}>
         {children}
       </code>
     )

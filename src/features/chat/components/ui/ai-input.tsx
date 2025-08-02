@@ -6,8 +6,8 @@ import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, 
 import { Loader2Icon, SendIcon, Square, XIcon } from "lucide-react"
 
 type UseAutoResizeTextareaProps = {
-  minHeight: string
-  maxHeight?: string
+  minHeight: number
+  maxHeight?: number
 }
 
 const useAutoResizeTextarea = ({ minHeight, maxHeight }: UseAutoResizeTextareaProps) => {
@@ -16,54 +16,35 @@ const useAutoResizeTextarea = ({ minHeight, maxHeight }: UseAutoResizeTextareaPr
   const adjustHeight = useCallback(
     (reset?: boolean) => {
       const textarea = textareaRef.current
-      if (!textarea) return
-
-      if (reset) {
-        textarea.style.height = minHeight
+      if (!textarea) {
         return
       }
 
-      textarea.style.height = minHeight
-      const newHeight = Math.max(
-        convertToPx(minHeight),
-        Math.min(textarea.scrollHeight, convertToPx(maxHeight) ?? Infinity),
-      )
+      if (reset) {
+        textarea.style.height = `${minHeight}px`
+        return
+      }
+
+      // Temporarily shrink to get the right scrollHeight
+      textarea.style.height = `${minHeight}px`
+
+      // Calculate new height
+      const newHeight = Math.max(minHeight, Math.min(textarea.scrollHeight, maxHeight ?? Number.POSITIVE_INFINITY))
 
       textarea.style.height = `${newHeight}px`
-      document.documentElement.style.setProperty("--prompt-area-height", `${newHeight}px`)
     },
     [minHeight, maxHeight],
   )
 
   useEffect(() => {
+    // Set initial height
     const textarea = textareaRef.current
     if (textarea) {
-      textarea.style.height = minHeight
+      textarea.style.height = `${minHeight}px`
     }
   }, [minHeight])
 
-  useEffect(() => {
-    const textarea = textareaRef.current
-
-    if (!textarea) return
-
-    const handleInput = () => adjustHeight()
-
-    const handleFocus = () => {
-      setTimeout(() => {
-        textarea.scrollIntoView({ behavior: "smooth", block: "center" })
-      }, 200)
-    }
-
-    textarea.addEventListener("input", handleInput)
-    textarea.addEventListener("focus", handleFocus)
-
-    return () => {
-      textarea.removeEventListener("input", handleInput)
-      textarea.removeEventListener("focus", handleFocus)
-    }
-  }, [adjustHeight])
-
+  // Adjust height on window resize
   useEffect(() => {
     const handleResize = () => adjustHeight()
     window.addEventListener("resize", handleResize)
@@ -80,16 +61,16 @@ export const AIInput = ({ className, ...props }: AIInputProps) => (
 )
 
 export type AIInputTextareaProps = ComponentProps<typeof Textarea> & {
-  minHeight?: string
-  maxHeight?: string
+  minHeight?: number
+  maxHeight?: number
 }
 
 export const AIInputTextarea = ({
   onChange,
   className,
   placeholder = "What would you like to know?",
-  minHeight = "80px",
-  maxHeight = "164px",
+  minHeight = 80,
+  maxHeight = 164,
   ...props
 }: AIInputTextareaProps) => {
   const { textareaRef, adjustHeight } = useAutoResizeTextarea({
@@ -109,9 +90,6 @@ export const AIInputTextarea = ({
 
   return (
     <textarea
-      style={{
-        minHeight,
-      }}
       className={cn(
         "w-full resize-none rounded-none border-none p-4 text-sm shadow-none outline-none",
         "bg-transparent dark:bg-transparent",
@@ -217,34 +195,3 @@ export type AIInputModelSelectValueProps = ComponentProps<typeof SelectValue>
 export const AIInputModelSelectValue = ({ className, ...props }: AIInputModelSelectValueProps) => (
   <SelectValue className={cn(className)} {...props} />
 )
-
-/* -------------------------------------------------------------------------- */
-/*                                    Utils                                   */
-/* -------------------------------------------------------------------------- */
-function convertToPx(value?: string) {
-  if (!value || typeof value !== "string") {
-    return 0
-  }
-
-  const cleanValue = value.trim().toLowerCase()
-
-  const match = cleanValue.match(/^(-?\d*\.?\d+)(px|rem)$/)
-
-  if (!match) {
-    console.warn(`Invalid value format: ${value}`)
-    return 0
-  }
-
-  const [, number, unit] = match
-  const numValue = parseFloat(number)
-
-  if (unit === "px") {
-    return numValue
-  } else if (unit === "rem") {
-    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
-
-    return numValue * rootFontSize
-  }
-
-  return 0
-}
