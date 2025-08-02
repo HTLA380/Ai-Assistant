@@ -34,9 +34,6 @@ import {
 
 const RESIZABLE_LAYOUT_PANEL_ID = "left_panel"
 
-const MAIN_AREA_PADDING = "0.5rem"
-const HEADER_HEIGHT = "3.5rem"
-
 const DEFAULT_LAYOUT_VALUES: AppLayoutCookieData = {
   activeView: "history",
   panels: { [RESIZABLE_LAYOUT_PANEL_ID]: false },
@@ -71,8 +68,8 @@ const AppLayout = ({ children, defaultValues = DEFAULT_LAYOUT_VALUES, panelSlot,
             className="flex h-svh w-full bg-background"
             style={
               {
-                "--main-area-padding": MAIN_AREA_PADDING,
-                "--header-height": HEADER_HEIGHT,
+                "--main-area-padding": "0.5rem",
+                "--header-height": "3.5rem",
               } as React.CSSProperties
             }>
             {!isMobile && <AppLayoutSidebar />}

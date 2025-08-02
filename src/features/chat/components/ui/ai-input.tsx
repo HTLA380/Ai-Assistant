@@ -16,20 +16,15 @@ const useAutoResizeTextarea = ({ minHeight, maxHeight }: UseAutoResizeTextareaPr
   const adjustHeight = useCallback(
     (reset?: boolean) => {
       const textarea = textareaRef.current
-      if (!textarea) {
-        return
-      }
+      if (!textarea) return
 
       if (reset) {
         textarea.style.height = `${minHeight}px`
         return
       }
 
-      // Temporarily shrink to get the right scrollHeight
-      textarea.style.height = `${minHeight}px`
-
-      // Calculate new height
-      const newHeight = Math.max(minHeight, Math.min(textarea.scrollHeight, maxHeight ?? Number.POSITIVE_INFINITY))
+      textarea.style.height = `${minHeight}px` // collapse before measuring
+      const newHeight = Math.max(minHeight, Math.min(textarea.scrollHeight, maxHeight ?? Infinity))
 
       textarea.style.height = `${newHeight}px`
     },
@@ -37,14 +32,35 @@ const useAutoResizeTextarea = ({ minHeight, maxHeight }: UseAutoResizeTextareaPr
   )
 
   useEffect(() => {
-    // Set initial height
     const textarea = textareaRef.current
     if (textarea) {
       textarea.style.height = `${minHeight}px`
+      document.documentElement.style.setProperty("--prompt-area-height", `${minHeight}px`)
     }
   }, [minHeight])
 
-  // Adjust height on window resize
+  useEffect(() => {
+    const textarea = textareaRef.current
+
+    if (!textarea) return
+
+    const handleInput = () => adjustHeight()
+
+    const handleFocus = () => {
+      setTimeout(() => {
+        textarea.scrollIntoView({ behavior: "smooth", block: "center" })
+      }, 200)
+    }
+
+    textarea.addEventListener("input", handleInput)
+    textarea.addEventListener("focus", handleFocus)
+
+    return () => {
+      textarea.removeEventListener("input", handleInput)
+      textarea.removeEventListener("focus", handleFocus)
+    }
+  }, [adjustHeight])
+
   useEffect(() => {
     const handleResize = () => adjustHeight()
     window.addEventListener("resize", handleResize)
@@ -90,6 +106,9 @@ export const AIInputTextarea = ({
 
   return (
     <textarea
+      style={{
+        minHeight,
+      }}
       className={cn(
         "w-full resize-none rounded-none border-none p-4 text-sm shadow-none outline-none",
         "bg-transparent dark:bg-transparent",
