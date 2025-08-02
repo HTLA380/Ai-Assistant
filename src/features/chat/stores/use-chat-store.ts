@@ -42,6 +42,7 @@ export const useChatStore = create<ChatStore>((set) => ({
 
   setInput: (input) => set({ input }),
   setPreviousResponseId: (previousResponseId: any) => set({ previousResponseId }),
+
   setLlmConfig: (config) => set({ llmConfig: config }),
 
   addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),

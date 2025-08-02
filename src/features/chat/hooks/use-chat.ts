@@ -44,7 +44,7 @@ export const useChat = () => {
           body: JSON.stringify({
             message: currentInput,
             previousResponseId,
-            llmConfig, // Pass the config from the store
+            llmConfig,
           }),
         })
 

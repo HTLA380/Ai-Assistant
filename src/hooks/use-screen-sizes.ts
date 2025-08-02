@@ -1,6 +1,6 @@
 "use client"
 
-import { useMediaQuery } from "usehooks-ts"
+import useMediaQuery from "./use-media-query"
 
 /**
  * Media query strings for different screen sizes.

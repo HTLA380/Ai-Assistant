@@ -1,9 +1,9 @@
 "use client"
 
 import React from "react"
-import { useIsMobile } from "@/hooks/use-mobile"
 import { AnimatePresence, motion } from "framer-motion"
 import { GlobeIcon, Paperclip, Telescope } from "lucide-react"
+import { useIsMobile } from "@/hooks/use-screen-sizes"
 import { Messages } from "./components/messages"
 import { SuggestionItems } from "./components/suggestion-items"
 import {
@@ -73,7 +73,9 @@ const ChatView = () => {
 
       <div className="pointer-events-none absolute inset-0 z-50 w-full">
         <div className="mx-auto flex size-full flex-col items-center justify-center">
-          {!hasConversation && <WelcomeMessage className="pointer-events-auto mb-4 grow md:grow-0" />}
+          {!hasConversation && (
+            <WelcomeMessage className="pointer-events-auto mb-4 max-w-[var(--chat-view-max-width)] grow md:grow-0" />
+          )}
 
           {hasConversation && (
             <motion.div

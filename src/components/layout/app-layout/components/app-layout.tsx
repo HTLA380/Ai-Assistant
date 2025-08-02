@@ -1,10 +1,11 @@
 "use client"
 
-import React, { useCallback } from "react"
+import React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Button, ScrollArea, tabsStyles } from "@mijn-ui/react"
 import { Menu, X } from "lucide-react"
+import { useIsMobile } from "@/hooks/use-screen-sizes"
 import {
   Sidebar,
   SidebarContent,
@@ -26,22 +27,19 @@ import {
   ResizableLayoutPanel,
   ResizableLayoutProvider,
 } from "./resizable-layout"
-import { useIsMobile } from "@/hooks/use-screen-sizes"
 
 /* -------------------------------------------------------------------------- */
 /*                                 Constants                                  */
 /* -------------------------------------------------------------------------- */
 
-const LAYOUT_CONFIG = {
-  panelId: "left_panel",
-  mainAreaPadding: "0.5rem",
-  headerHeight: "3.5rem",
-  drawerMaxHeight: "70vh",
-} as const
+const RESIZABLE_LAYOUT_PANEL_ID = "left_panel"
+
+const MAIN_AREA_PADDING = "0.5rem"
+const HEADER_HEIGHT = "3.5rem"
 
 const DEFAULT_LAYOUT_VALUES: AppLayoutCookieData = {
   activeView: "history",
-  panels: { [LAYOUT_CONFIG.panelId]: false },
+  panels: { [RESIZABLE_LAYOUT_PANEL_ID]: false },
   sizes: [0, 100],
 }
 
@@ -57,25 +55,26 @@ export type AppLayoutProps = {
 const AppLayout = ({ children, defaultValues = DEFAULT_LAYOUT_VALUES, panelSlot, headerSlot }: AppLayoutProps) => {
   const isMobile = useIsMobile()
 
-  // Memoized event handlers to prevent unnecessary re-renders
-  const handlePanelChange = useCallback((panels: Record<string, boolean>) => {
+  const handlePanelChange = (panels: Record<string, boolean>) => {
     updateResizableLayoutCookie({ panels })
-  }, [])
+  }
 
-  const handleLayoutChange = useCallback((sizes: number[]) => {
+  const handleLayoutChange = (sizes: number[]) => {
     updateResizableLayoutCookie({ sizes })
-  }, [])
-
-  const cssVariables = {
-    "--main-area-padding": LAYOUT_CONFIG.mainAreaPadding,
-    "--header-height": LAYOUT_CONFIG.headerHeight,
-  } as React.CSSProperties
+  }
 
   return (
     <AppLayoutPanelViewProvider defaultActiveView={defaultValues.activeView}>
       <ResizableLayoutProvider defaultPanels={defaultValues.panels} onPanelChange={handlePanelChange}>
         <SidebarProvider>
-          <div className="flex h-svh w-full bg-background" style={cssVariables}>
+          <div
+            className="flex h-svh w-full bg-background"
+            style={
+              {
+                "--main-area-padding": MAIN_AREA_PADDING,
+                "--header-height": HEADER_HEIGHT,
+              } as React.CSSProperties
+            }>
             {!isMobile && <AppLayoutSidebar />}
 
             <div className="h-full grow md:p-[var(--main-area-padding)]">
@@ -84,15 +83,52 @@ const AppLayout = ({ children, defaultValues = DEFAULT_LAYOUT_VALUES, panelSlot,
                   defaultLayout={defaultValues.sizes}
                   onLayoutChange={handleLayoutChange}
                   direction="horizontal">
-                  {/* Panel persists in DOM to maintain state */}
-                  <PanelContent panelSlot={panelSlot} />
+                  <ResizableLayoutPanel className="hidden md:block" id={RESIZABLE_LAYOUT_PANEL_ID} side="left">
+                    <header className="flex items-center justify-end p-2">
+                      <ResizableLayoutClose asChild id={RESIZABLE_LAYOUT_PANEL_ID}>
+                        <Button variant="ghost" iconOnly>
+                          <X />
+                          <span className="sr-only">Close Panel</span>
+                        </Button>
+                      </ResizableLayoutClose>
+                    </header>
+
+                    {!isMobile && <div className="hidden size-full md:block">{panelSlot}</div>}
+                  </ResizableLayoutPanel>
 
                   <ResizableLayoutContent disableTransition className="relative w-screen md:w-full">
-                    {isMobile ? (
-                      <MobileHeader headerSlot={headerSlot} panelSlot={panelSlot} />
-                    ) : (
-                      <DesktopHeader headerSlot={headerSlot} />
-                    )}
+                    <div className="sticky inset-x-0 z-50 flex h-[var(--header-height)] w-full items-center justify-between bg-secondary px-4 md:absolute md:top-4 md:justify-end md:bg-transparent md:px-6">
+                      {/* Mobile Header Menu */}
+                      <Drawer>
+                        <DrawerTrigger asChild>
+                          <Button iconOnly size="sm" variant="ghost" className="text-xl md:hidden">
+                            <Menu />
+                            <span className="sr-only">Open menu</span>
+                          </Button>
+                        </DrawerTrigger>
+
+                        {isMobile && (
+                          <DrawerContent className="z-[99] flex w-full flex-col md:hidden">
+                            <DrawerTitle className="sr-only">Navigation Menu</DrawerTitle>
+
+                            <div className={tabsStyles().list({ className: "flex-row" })}>
+                              {SIDEBAR_NAV_ITEMS.filter((item) => item.panelViewId).map((item) => (
+                                <AppLayoutPanelViewTrigger key={item.panelViewId} value={item.panelViewId!} asChild>
+                                  <button className={tabsStyles().trigger({ className: "w-full" })}>
+                                    <item.icon />
+                                    <span className="text-xs">{item.title}</span>
+                                  </button>
+                                </AppLayoutPanelViewTrigger>
+                              ))}
+                            </div>
+
+                            <ScrollArea className="h-[70svh] overflow-y-auto">{panelSlot}</ScrollArea>
+                          </DrawerContent>
+                        )}
+                      </Drawer>
+
+                      {headerSlot}
+                    </div>
 
                     {children}
                   </ResizableLayoutContent>
@@ -110,80 +146,8 @@ export { AppLayout }
 
 /* -------------------------------------------------------------------------- */
 
-type MobileHeaderProps = {
-  headerSlot?: React.ReactNode
-  panelSlot?: React.ReactNode
-}
-
-const MobileHeader = ({ headerSlot, panelSlot }: MobileHeaderProps) => (
-  <div className="sticky z-50 flex h-[var(--header-height)] items-center justify-between bg-secondary px-4">
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button iconOnly size="sm" variant="ghost" className="text-xl">
-          <Menu />
-          <span className="sr-only">Open menu</span>
-        </Button>
-      </DrawerTrigger>
-
-      <DrawerContent className="z-[99] flex w-full flex-col">
-        <DrawerTitle className="sr-only">Navigation Menu</DrawerTitle>
-
-        <div className={tabsStyles().list({ className: "flex-row" })}>
-          {SIDEBAR_NAV_ITEMS.filter((item) => item.panelViewId).map((item) => (
-            <AppLayoutPanelViewTrigger key={item.panelViewId} value={item.panelViewId!} asChild>
-              <button className={tabsStyles().trigger({ className: "w-full" })}>
-                <item.icon />
-                <span className="text-xs">{item.title}</span>
-              </button>
-            </AppLayoutPanelViewTrigger>
-          ))}
-        </div>
-
-        <ScrollArea className={`h-[${LAYOUT_CONFIG.drawerMaxHeight}] overflow-y-auto`}>{panelSlot}</ScrollArea>
-      </DrawerContent>
-    </Drawer>
-
-    <div className="flex items-center gap-2">{headerSlot}</div>
-  </div>
-)
-
-/* -------------------------------------------------------------------------- */
-
-type DesktopHeaderProps = {
-  headerSlot?: React.ReactNode
-}
-
-const DesktopHeader = ({ headerSlot }: DesktopHeaderProps) => (
-  <div className="absolute inset-x-0 top-4 z-50 flex h-[var(--header-height)] w-full items-center justify-end bg-transparent px-6">
-    {headerSlot}
-  </div>
-)
-
-/* -------------------------------------------------------------------------- */
-
-type PanelContentProps = {
-  panelSlot?: React.ReactNode
-}
-
-const PanelContent = ({ panelSlot }: PanelContentProps) => (
-  <ResizableLayoutPanel className="hidden md:block" id={LAYOUT_CONFIG.panelId} side="left">
-    <header className="flex items-center justify-end p-2">
-      <ResizableLayoutClose asChild id={LAYOUT_CONFIG.panelId}>
-        <Button variant="ghost" iconOnly>
-          <X />
-          <span className="sr-only">Close Panel</span>
-        </Button>
-      </ResizableLayoutClose>
-    </header>
-
-    <div className="hidden size-full md:block">{panelSlot}</div>
-  </ResizableLayoutPanel>
-)
-
-/* -------------------------------------------------------------------------- */
-
 const AppLayoutSidebar = () => {
-  const renderSidebarItem = useCallback((item: (typeof SIDEBAR_NAV_ITEMS)[0]) => {
+  const renderSidebarItem = (item: (typeof SIDEBAR_NAV_ITEMS)[0]) => {
     const Icon = item.icon
     const key = item.panelViewId || item.title
 
@@ -203,7 +167,7 @@ const AppLayoutSidebar = () => {
 
     // Panel view items
     return (
-      <ResizableLayoutOpen id={LAYOUT_CONFIG.panelId} key={key} asChild>
+      <ResizableLayoutOpen id={RESIZABLE_LAYOUT_PANEL_ID} key={key} asChild>
         <AppLayoutPanelViewTrigger value={item.panelViewId} asChild>
           <SidebarItem tooltip={item.tooltip}>
             <SidebarIcon>
@@ -214,11 +178,11 @@ const AppLayoutSidebar = () => {
         </AppLayoutPanelViewTrigger>
       </ResizableLayoutOpen>
     )
-  }, [])
+  }
 
   return (
     <>
-      <Sidebar className="shrink-0">
+      <Sidebar className="hidden shrink-0 md:block">
         <SidebarContent>
           <SidebarIcon asChild>
             <Link

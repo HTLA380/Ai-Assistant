@@ -40,5 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 GEMINI.md
+CRUSH.md
 nextjs-refresh-token-rotation
 package-lock.json
+
+# Crush
+.crush
