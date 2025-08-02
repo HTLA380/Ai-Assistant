@@ -69,7 +69,7 @@ const SuggestionItems = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 10 }}
       transition={{ delay: 0.8 }}
-      className="pointer-events-auto mt-6 hidden max-w-[var(--chat-view-max-width)] flex-wrap items-center gap-2 px-4 md:flex xl:px-0">
+      className="pointer-events-auto mt-6 hidden max-w-[var(--chat-view-max-width)] flex-wrap items-center gap-2 px-4 md:flex lg:px-0">
       {SUGGESTION_ITEMS.map((item) => (
         <Button key={item.id} size="sm" className="gap-2">
           {item.icon}

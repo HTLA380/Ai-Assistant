@@ -5,7 +5,7 @@ const WelcomeMessage = ({ className }: { className?: string }) => {
   return (
     <div
       className={cn(
-        "flex w-full max-w-[90%] flex-col items-start justify-center px-6 xl:max-w-3xl xl:px-0",
+        "flex w-full max-w-[90%] flex-col items-start justify-center px-4 lg:px-0 xl:max-w-3xl",
         className,
       )}>
       <motion.h1
