@@ -1,86 +1,80 @@
 import { create } from "zustand"
-import { LlmConfigResponse } from "@/lib/llm/types/llm"
+import { subscribeWithSelector } from "zustand/middleware"
+import { Message, ToolCall } from "../type"
 
-export type Message = {
-  role: "user" | "assistant"
-  content: string
-}
+export type ChatStatus = "ready" | "submitted" | "streaming" | "error"
 
-export type ChatStatus = "ready" | "streaming" | "error" | "loading-config"
-
-type ChatState = {
+interface ChatStore {
   messages: Message[]
+  conversationId: string | null
   status: ChatStatus
+  error: Error | null
+  streamingMessage: string
+  currentToolCalls: ToolCall[]
   input: string
-  previousResponseId: null | number | string
-  llmConfig: LlmConfigResponse | null
-}
 
-type ChatActions = {
-  setInput: (input: string) => void
-  setPreviousResponseId: (input: null | number | string) => void
-  setLlmConfig: (config: LlmConfigResponse) => void
+  setMessages: (messages: Message[]) => void
   addMessage: (message: Message) => void
-  updateLastMessage: (content: string) => void
+  updateLastMessage: (updates: Partial<Message>) => void
+  setConversationId: (id: string | null) => void
   setStatus: (status: ChatStatus) => void
-  setError: (errorMessage: string) => void
-  reset: () => void
+  setError: (error: Error | null) => void
+  setStreamingMessage: (message: string) => void
+  appendStreamingContent: (content: string) => void
+  setCurrentToolCalls: (toolCalls: ToolCall[]) => void
+  setInput: (input: string) => void
+  reset: (initialMessages?: Message[], conversationId?: string) => void
 }
 
-export type ChatStore = ChatState & ChatActions
+const createChatStore = (initialMessages: Message[] = [], conversationId?: string) =>
+  create<ChatStore>()(
+    subscribeWithSelector((set, get) => ({
+      messages: initialMessages,
+      conversationId: conversationId || null,
+      status: "ready",
+      error: null,
+      streamingMessage: "",
+      currentToolCalls: [],
+      input: "",
 
-const initialState: ChatState = {
-  messages: [],
-  status: "ready",
-  input: "",
-  previousResponseId: null,
-  llmConfig: null,
-}
+      setMessages: (messages) => set({ messages }),
 
-export const useChatStore = create<ChatStore>((set) => ({
-  ...initialState,
+      addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
 
-  setInput: (input) => set({ input }),
-  setPreviousResponseId: (previousResponseId: any) => set({ previousResponseId }),
+      updateLastMessage: (updates) =>
+        set((state) => {
+          const messages = [...state.messages]
+          const lastIndex = messages.length - 1
+          if (lastIndex >= 0) {
+            messages[lastIndex] = { ...messages[lastIndex], ...updates }
+          }
+          return { messages }
+        }),
 
-  setLlmConfig: (config) => set({ llmConfig: config }),
+      setConversationId: (conversationId) => set({ conversationId }),
 
-  addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
+      setStatus: (status) => set({ status }),
 
-  updateLastMessage: (contentChunk) => {
-    set((state) => {
-      const messages = [...state.messages]
-      const lastMessage = messages[messages.length - 1]
-      if (lastMessage) {
-        messages[messages.length - 1] = {
-          ...lastMessage,
-          content: lastMessage.content + contentChunk,
-        }
-      }
-      return { messages }
-    })
-  },
+      setError: (error) => set({ error }),
 
-  setStatus: (status) => set({ status }),
+      setStreamingMessage: (streamingMessage) => set({ streamingMessage }),
 
-  setError: (errorMessage) => {
-    set((state) => {
-      const messages = [...state.messages]
-      const lastMessage = messages[messages.length - 1]
-      // If the last message was an empty assistant message, replace it with the error.
-      if (lastMessage && lastMessage.role === "assistant" && lastMessage.content === "") {
-        messages[messages.length - 1] = {
-          ...lastMessage,
-          content: errorMessage,
-        }
-        return { messages, status: "error" }
-      }
-      // Otherwise, add a new error message.
-      return {
-        messages: [...messages, { role: "assistant", content: errorMessage }],
-        status: "error",
-      }
-    })
-  },
-  reset: () => set(initialState),
-}))
+      appendStreamingContent: (content) => set((state) => ({ streamingMessage: state.streamingMessage + content })),
+
+      setCurrentToolCalls: (currentToolCalls) => set({ currentToolCalls }),
+
+      setInput: (input) => set({ input }),
+
+      reset: (initialMessages = [], conversationId) =>
+        set({
+          messages: initialMessages,
+          conversationId: conversationId || null,
+          status: "idle",
+          error: null,
+          streamingMessage: "",
+          currentToolCalls: [],
+          input: "",
+        }),
+    })),
+  )
+export { createChatStore }

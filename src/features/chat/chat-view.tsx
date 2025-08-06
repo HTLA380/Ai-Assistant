@@ -1,10 +1,12 @@
 "use client"
 
 import React from "react"
+import Image from "next/image"
+import { Button, cn } from "@mijn-ui/react"
 import { AnimatePresence, motion } from "framer-motion"
 import { GlobeIcon, Paperclip, Telescope } from "lucide-react"
 import { useIsMobile } from "@/hooks/use-screen-sizes"
-import { Messages } from "./components/messages"
+import { Markdown } from "./components/markdown"
 import { SuggestionItems } from "./components/suggestion-items"
 import {
   AIInput,
@@ -17,13 +19,10 @@ import {
 import { AIConversation, AIConversationContent, AIConversationScrollButton } from "./components/ui/conversation"
 import { WelcomeMessage } from "./components/welcome-message"
 import { useChat } from "./hooks/use-chat"
-import { useLlmConfig } from "./hooks/use-llm-config"
 
 /* -------------------------------------------------------------------------- */
 
 const ChatView = () => {
-  useLlmConfig()
-
   const { messages, status, input, setInput, handleSubmit } = useChat()
   const isMobile = useIsMobile()
 
@@ -33,7 +32,7 @@ const ChatView = () => {
     setInput(e.target.value)
   }
 
-  const isSubmitDisabled = !input || status === "streaming" || status === "loading-config"
+  const isSubmitDisabled = !input || status === "submitted" || status === "streaming"
 
   const promptAreaHeight = isMobile ? 60 : 80
 
@@ -52,14 +51,45 @@ const ChatView = () => {
             <div className="mx-auto flex size-full flex-col gap-8 pb-[calc(var(--prompt-area-height)_+_10rem)] md:pb-[calc(var(--prompt-area-height)_+_12rem)] md:pt-[var(--header-height)]">
               {hasConversation && (
                 <div className="mx-auto flex w-full max-w-[var(--chat-view-max-width)] flex-col gap-8">
-                  {messages.map((message, index) => (
-                    <Messages
-                      key={`message-${index}`}
-                      role={message.role}
-                      content={message.content}
-                      isStreaming={status === "streaming" && index === messages.length - 1}
-                    />
-                  ))}
+                  {messages.map((message) => {
+                    const shouldShowThinking =
+                      status === "submitted" && message.role === "assistant" && !message.content
+
+                    return (
+                      <div
+                        data-role={message.role}
+                        key={message.id}
+                        className="group flex items-start gap-3 data-[role=assistant]:flex-col data-[role=user]:justify-end">
+                        <style>{`
+                      .markdown img {
+                        width: 200px !important;
+                        height: 200px !important;
+                      }
+                    `}</style>
+
+                        <div className="flex w-full flex-col items-start gap-2 group-data-[role=user]:w-fit group-data-[role=user]:items-end">
+                          {message.role === "assistant" && (
+                            <div className="flex items-center gap-2">
+                              <Button
+                                className="flex size-7 shrink-0 items-center justify-center rounded-full !p-0"
+                                iconOnly
+                                variant="ghost">
+                                <Image src="/images/picosbs.png" width={28} height={28} alt="Picosbs" />
+                              </Button>
+                              <span className="text-xs font-medium">Pica Bot</span>
+                              <span className="text-muted-foreground">|</span>
+                              <span className="text-xs font-medium text-secondary-foreground">GPT4.1</span>
+                            </div>
+                          )}
+                          {shouldShowThinking && <ThinkingMessage key={message.id} />}
+                          {message.role === "assistant" && !shouldShowThinking && (
+                            <AssistantMessage content={message.content} />
+                          )}
+                          {message.role === "user" && <UserMessage content={message.content} />}
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               )}
             </div>
@@ -109,7 +139,7 @@ const ChatView = () => {
                     <span>Search</span>
                   </AIInputButton>
                 </AIInputTools>
-                <AIInputSubmit disabled={isSubmitDisabled} status={status} />
+                <AIInputSubmit disabled={isSubmitDisabled} />
               </AIInputToolbar>
             </AIInput>
           </motion.div>
@@ -122,3 +152,29 @@ const ChatView = () => {
 }
 
 export { ChatView }
+
+const UserMessage = ({ content }: { content: string }) => (
+  <div
+    className={cn(
+      "min-w-fit max-w-[calc(var(--chat-view-max-width)*0.7)] rounded-lg bg-background px-4 py-2.5 text-sm shadow-xs",
+    )}>
+    <p>{content}</p>
+  </div>
+)
+
+const AssistantMessage = ({ content }: { content: string }) => (
+  <>
+    <div className="markdown prose w-full max-w-none text-sm dark:prose-invert">
+      <Markdown>{content}</Markdown>
+    </div>
+  </>
+)
+
+const ThinkingMessage = () => (
+  <motion.div
+    initial={{ y: 5, opacity: 0 }}
+    animate={{ y: 0, opacity: 1, transition: { delay: 0.25 } }}
+    data-role="assistant">
+    <p className="text-sm text-secondary-foreground">Let me think...</p>
+  </motion.div>
+)
